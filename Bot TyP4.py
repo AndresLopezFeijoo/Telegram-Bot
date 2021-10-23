@@ -2,7 +2,7 @@ import telegram.ext
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import ConversationHandler
 
-TOKEN = "1965896728:AAFgG4MTLoLy8QnqINF4qLm4_umRJM7DJHo"
+TOKEN = ""
 updater = telegram.ext.Updater(TOKEN, use_context=True)
 disp = updater.dispatcher
 
