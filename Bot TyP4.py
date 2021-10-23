@@ -2,7 +2,7 @@ import telegram.ext
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import ConversationHandler
 
-TOKEN = ""
+TOKEN = "1965896728:AAFgG4MTLoLy8QnqINF4qLm4_umRJM7DJHo"
 updater = telegram.ext.Updater(TOKEN, use_context=True)
 disp = updater.dispatcher
 
@@ -21,8 +21,7 @@ dicts = {"1": ["1.1.mp3", "1.2.mp3", "1.3.mp3", "1.4.mp3", "1.5.mp3", "Do Mayor,
          "306": ["306.1.mp3", "306.2.mp3", "306.3.mp3", "306.4.mp3", "306.5.mp3"],
          "378": ["378.1.mp3", "378.2.mp3", "378.3.mp3", "378.4.mp3", "378.5.mp3"]}
 
-hind = {"III": {"19a", "19b", "19c", "19d", "20e", "20f", "20g", "20h", "21a", "21b", "21c", "21d", "21e","22f", "22g",
-                "22a", "22b", "22c", "23d", "23e", "23f"},
+hind = {"III": {},
         "IV": {},
         "V": {},
         "VI": {},
@@ -54,7 +53,7 @@ def lista_dictados(update, context):
     update.callback_query.answer()
     msg = "Estos son los dictados que te puedo ofrecer:"
 
-    if update.callback_query["data"] == "Im":
+    if update.callback_query["data"] == "mI":
         keyboard = [[InlineKeyboardButton("volver a Dictados", callback_data="dict"),]]
         for i in dicts:
             if int(i) < 51:
@@ -62,7 +61,7 @@ def lista_dictados(update, context):
                 disp.add_handler(telegram.ext.CallbackQueryHandler(pattern=str(i), callback=send_dict))
                 reply_markup = InlineKeyboardMarkup(keyboard) #Creo que esto deberia estar afuera del if. funciona igual...
                 update.callback_query.edit_message_text(text=msg, reply_markup=reply_markup) #Idem arriba
-    elif update.callback_query["data"] == "IIm":
+    elif update.callback_query["data"] == "mII":
         keyboard = [[InlineKeyboardButton("volver a Dictados", callback_data="dict"), ]]
         for i in dicts:
             if 50 < int(i) < 101:
@@ -70,7 +69,7 @@ def lista_dictados(update, context):
                 disp.add_handler(telegram.ext.CallbackQueryHandler(pattern=str(i), callback=send_dict))
                 reply_markup = InlineKeyboardMarkup(keyboard)
                 update.callback_query.edit_message_text(text=msg, reply_markup=reply_markup)
-    elif update.callback_query["data"] == "IIIm":
+    elif update.callback_query["data"] == "mIII":
         keyboard = [[InlineKeyboardButton("volver a Dictados", callback_data="dict"), ]]
         for i in dicts:
             if 100 < int(i) < 151:
@@ -78,7 +77,7 @@ def lista_dictados(update, context):
                 disp.add_handler(telegram.ext.CallbackQueryHandler(pattern=str(i), callback=send_dict))
                 reply_markup = InlineKeyboardMarkup(keyboard)
                 update.callback_query.edit_message_text(text=msg, reply_markup=reply_markup)
-    elif update.callback_query["data"] == "IVm":
+    elif update.callback_query["data"] == "mIV":
         keyboard = [[InlineKeyboardButton("volver a Dictados", callback_data="dict"), ]]
         for i in dicts:
             if 150 < int(i) < 201:
@@ -86,7 +85,7 @@ def lista_dictados(update, context):
                 disp.add_handler(telegram.ext.CallbackQueryHandler(pattern=str(i), callback=send_dict))
                 reply_markup = InlineKeyboardMarkup(keyboard)
                 update.callback_query.edit_message_text(text=msg, reply_markup=reply_markup)
-    elif update.callback_query["data"] == "Ir":
+    elif update.callback_query["data"] == "rI":
         keyboard = [[InlineKeyboardButton("volver a Dictados", callback_data="dict"), ]]
         for i in dicts:
             if 200 < int(i) < 251:
@@ -94,7 +93,7 @@ def lista_dictados(update, context):
                 disp.add_handler(telegram.ext.CallbackQueryHandler(pattern=str(i), callback=send_dict))
                 reply_markup = InlineKeyboardMarkup(keyboard)
                 update.callback_query.edit_message_text(text=msg, reply_markup=reply_markup)
-    elif update.callback_query["data"] == "IIr":
+    elif update.callback_query["data"] == "rII":
         keyboard = [[InlineKeyboardButton("volver a Dictados", callback_data="dict"), ]]
         for i in dicts:
             if 250 < int(i) < 301:
@@ -102,7 +101,7 @@ def lista_dictados(update, context):
                 disp.add_handler(telegram.ext.CallbackQueryHandler(pattern=str(i), callback=send_dict))
                 reply_markup = InlineKeyboardMarkup(keyboard)
                 update.callback_query.edit_message_text(text=msg, reply_markup=reply_markup)
-    elif update.callback_query["data"] == "IIIr":
+    elif update.callback_query["data"] == "rIII":
         keyboard = [[InlineKeyboardButton("volver a Dictados", callback_data="dict"), ]]
         for i in dicts:
             if 300 < int(i) < 351:
@@ -110,12 +109,12 @@ def lista_dictados(update, context):
                 disp.add_handler(telegram.ext.CallbackQueryHandler(pattern=str(i), callback=send_dict))
                 reply_markup = InlineKeyboardMarkup(keyboard)
                 update.callback_query.edit_message_text(text=msg, reply_markup=reply_markup)
-    elif update.callback_query["data"] == "IVr":
+    elif update.callback_query["data"] == "rIV":
         keyboard = [[InlineKeyboardButton("volver a Dictados", callback_data="dict"), ]]
         for i in dicts:
             if 350 < int(i) < 401:
                 keyboard.append([InlineKeyboardButton(str(int(i) - 350), callback_data=str(i))])
-                disp.add_handler(telegram.ext.CallbackQueryHandler(pattern=str(i), callback=send_dict))
+                disp.add_handler(telegram.ext.CallbackQueryHandler(pattern='^' + str(i) + '$', callback=send_dict))
                 reply_markup = InlineKeyboardMarkup(keyboard)
                 update.callback_query.edit_message_text(text=msg, reply_markup=reply_markup)
 
@@ -162,19 +161,19 @@ def send_dict(update, context):
 def años(update, context):
     update.callback_query.answer()
     if update.callback_query["data"] == "mel":
-        keyboard = [[InlineKeyboardButton("I", callback_data="Im"),
-                     InlineKeyboardButton("II", callback_data="IIm"),
-                     InlineKeyboardButton("III", callback_data="IIIm"),
-                     InlineKeyboardButton("IV", callback_data="IVm")],
+        keyboard = [[InlineKeyboardButton("I", callback_data="mI"),
+                     InlineKeyboardButton("II", callback_data="mII"),
+                     InlineKeyboardButton("III", callback_data="mIII"),
+                     InlineKeyboardButton("IV", callback_data="mIV")],
                     [InlineKeyboardButton("Home", callback_data="home")]]
         reply_markup = InlineKeyboardMarkup(keyboard)
         update.callback_query.edit_message_text(text="De que año?", reply_markup=reply_markup)
 
     elif update.callback_query["data"] == "rit":
-        keyboard = [[InlineKeyboardButton("I", callback_data="Ir"),
-                     InlineKeyboardButton("II", callback_data="IIr"),
-                     InlineKeyboardButton("III", callback_data="IIIr"),
-                     InlineKeyboardButton("IV", callback_data="IVr")],
+        keyboard = [[InlineKeyboardButton("I", callback_data="rI"),
+                     InlineKeyboardButton("II", callback_data="rII"),
+                     InlineKeyboardButton("III", callback_data="rIII"),
+                     InlineKeyboardButton("IV", callback_data="rIV")],
                     [InlineKeyboardButton("Home", callback_data="home")]]
         reply_markup = InlineKeyboardMarkup(keyboard)
         update.callback_query.edit_message_text(text="De que año?", reply_markup=reply_markup)
@@ -197,14 +196,14 @@ def años(update, context):
         reply_markup = InlineKeyboardMarkup(keyboard)
         update.callback_query.edit_message_text(text="De que año?", reply_markup=reply_markup)
 
-    disp.add_handler(telegram.ext.CallbackQueryHandler(pattern="Im", callback=lista_dictados))
-    disp.add_handler(telegram.ext.CallbackQueryHandler(pattern="IIm", callback=lista_dictados))
-    disp.add_handler(telegram.ext.CallbackQueryHandler(pattern="IIIm", callback=lista_dictados))
-    disp.add_handler(telegram.ext.CallbackQueryHandler(pattern="IVm", callback=lista_dictados))
-    disp.add_handler(telegram.ext.CallbackQueryHandler(pattern="Ir", callback=lista_dictados))
-    disp.add_handler(telegram.ext.CallbackQueryHandler(pattern="IIr", callback=lista_dictados))
-    disp.add_handler(telegram.ext.CallbackQueryHandler(pattern="IIIr", callback=lista_dictados))
-    disp.add_handler(telegram.ext.CallbackQueryHandler(pattern="IVr", callback=lista_dictados))
+    disp.add_handler(telegram.ext.CallbackQueryHandler(pattern="mI", callback=lista_dictados))
+    disp.add_handler(telegram.ext.CallbackQueryHandler(pattern="mII", callback=lista_dictados))
+    disp.add_handler(telegram.ext.CallbackQueryHandler(pattern="mIII", callback=lista_dictados))
+    disp.add_handler(telegram.ext.CallbackQueryHandler(pattern="mIV", callback=lista_dictados))
+    disp.add_handler(telegram.ext.CallbackQueryHandler(pattern="rI", callback=lista_dictados))
+    disp.add_handler(telegram.ext.CallbackQueryHandler(pattern="rII", callback=lista_dictados))
+    disp.add_handler(telegram.ext.CallbackQueryHandler(pattern="rIII", callback=lista_dictados))
+    disp.add_handler(telegram.ext.CallbackQueryHandler(pattern="rIV", callback=lista_dictados))
     disp.add_handler(telegram.ext.CallbackQueryHandler(pattern="lmI", callback=lista_lect))
     disp.add_handler(telegram.ext.CallbackQueryHandler(pattern="lmII", callback=lista_lect))
     disp.add_handler(telegram.ext.CallbackQueryHandler(pattern="lmIII", callback=lista_lect))
@@ -304,8 +303,8 @@ def melo_list(update, context):
     keyboard = [[InlineKeyboardButton("Atras", callback_data="melo"),
                  InlineKeyboardButton("Home", callback_data="home"), ]]
     for i in melo[update.callback_query["data"]]:
-        keyboard.append([InlineKeyboardButton(i, callback_data=str(int(i) + 1600))])
-        disp.add_handler(telegram.ext.CallbackQueryHandler(pattern=str(int(i) + 1600), callback=send_melo))
+        keyboard.append([InlineKeyboardButton(i, callback_data="mc" + str(int(i) + 1600))])
+        disp.add_handler(telegram.ext.CallbackQueryHandler(pattern="mc" + str(int(i) + 1600), callback=send_melo))
     reply_markup = InlineKeyboardMarkup(keyboard)
     update.callback_query.edit_message_text(text="Puedo ofrecerte estos ejercicios:", reply_markup=reply_markup)
 
@@ -317,7 +316,7 @@ def send_melo(update, context):
     reply_markup = InlineKeyboardMarkup(keyboard)
     update.callback_query.edit_message_text(text="Elegí una opción:", reply_markup=reply_markup)
 
-    with open("melo/" + str(int(update.callback_query["data"]) - 1600) + ".mp3", "rb") as audio_file:
+    with open("melo/" + str(int(update.callback_query["data"][2::]) - 1600) + ".mp3", "rb") as audio_file:
         context.bot.send_voice(chat_id=update.callback_query["message"]["chat"]["id"], voice=audio_file)
 
 
