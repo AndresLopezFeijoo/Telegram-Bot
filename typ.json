@@ -1,0 +1,33 @@
+{
+ "dm": {
+   "I": {
+     "1": "Mi Mayor y en 3/4",
+     "2": "Sib Mayor y en 4/4",
+     "3": "Do Mayor y en 3/4",
+     "4": "Sol Mayor y en 4/4",
+     "5": "Re Mayor y en 4/4",
+     "6": "Re Mayor y en 3/4"
+ },
+   "II": {
+      "1": "Do Mayor y en 3/4",
+      "2": "Do Mayor y en 3/4"
+   },
+   "III": {
+     "10": "Do Mayor y en 3/4"
+   },
+   "IV": {
+     "13": "Do Mayor y en 3/4"
+   }},
+ "dr": {
+   "I": {
+     "3": "3/4"
+   },
+   "II": {
+     "4": "2/4"
+   },
+   "III": {
+     "6": "7/8"
+   },
+   "IV": {
+     "28": "6/4"}}
+ }
