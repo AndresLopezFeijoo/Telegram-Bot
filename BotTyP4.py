@@ -5,7 +5,7 @@ from telegram.ext import ConversationHandler
 from Tools import slice_lst, get_lst, base_key
 
 
-TOKEN = ""
+TOKEN = "1965896728:AAFgG4MTLoLy8QnqINF4qLm4_umRJM7DJHo"
 updater = telegram.ext.Updater(TOKEN, use_context=True)
 disp = updater.dispatcher
 datos = json.load(open("datos.json"))
@@ -23,7 +23,7 @@ def mel_rit(update, context):
 
     keyboard.append(k2)
     reply_markup = InlineKeyboardMarkup(keyboard)
-    update.callback_query.edit_message_text(text="<strong>" + datos[ucq][0][0] + " o " + datos[ucq][0][1] + "?</strong>",
+    update.callback_query.edit_message_text(text="\U0001f916 <strong>" + datos[ucq][0][0] + " o " + datos[ucq][0][1] + "?</strong>",
                                             reply_markup=reply_markup, parse_mode=telegram.ParseMode.HTML)
 
 
@@ -89,10 +89,7 @@ def send_sol(update, context):
     with open("dictimag/" + ucq + ".png", "rb") as photo_file:
         context.bot.send_photo(chat_id=update.callback_query["message"]["chat"]["id"], photo=photo_file,
                                caption=u'\U0001F648 \U0001F91E \U0001F91E \U0001F91E')
-
-    keyboard = [[InlineKeyboardButton("Home", callback_data="home")],
-                [InlineKeyboardButton("Terminar", callback_data="end")],
-                [InlineKeyboardButton("volver a dictados", callback_data="dict")]]
+    keyboard = base_key("Volver a dictados", "dict", two=False)
     reply_markup = InlineKeyboardMarkup(keyboard)
     update.callback_query.edit_message_text(text="\U0001f916 <strong>Hacemos algo mas?</strong>",
                                             reply_markup=reply_markup, parse_mode=telegram.ParseMode.HTML)
@@ -222,8 +219,8 @@ def end(update, context):
 
 
 def handle_message(update, context):
-    update.message.reply_text(f"\U0001f916 <strong>Dijiste: {update.message.text} y no entiendo.</strong>\n" 
-                            "Todavia no se conversar pero tengo muchos botones,\n"
+    update.message.reply_text(f"\U0001f916 <strong>Dijiste {update.message.text} y no te entiendo.....</strong>\n" 
+                            "Todavia no se conversar pero tengo muchos botones!!\n"
                             "para inciar escribí /start", parse_mode=telegram.ParseMode.HTML)
 
 
