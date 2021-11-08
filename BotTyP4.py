@@ -5,7 +5,7 @@ from telegram.ext import ConversationHandler
 from Tools import slice_lst, get_lst, base_key
 
 
-TOKEN = "1965896728:AAFgG4MTLoLy8QnqINF4qLm4_umRJM7DJHo"
+TOKEN = ""
 updater = telegram.ext.Updater(TOKEN, use_context=True)
 disp = updater.dispatcher
 datos = json.load(open("datos.json"))
