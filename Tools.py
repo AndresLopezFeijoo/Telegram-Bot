@@ -18,7 +18,8 @@ def get_lst(path, clear: bool):
         lst = [i.split(".")[0] for i in os.listdir(path) if not i.startswith('.')]
     else:
         lst = [i for i in os.listdir(path) if not i.startswith('.')]
-    return lst.sort()
+
+    return sorted(lst)
 
 
 def base_key(*args, two: bool):
