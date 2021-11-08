@@ -5,7 +5,7 @@ from telegram.ext import ConversationHandler
 from Tools import slice_lst, get_lst, base_key
 
 
-TOKEN = ""
+TOKEN = "1965896728:AAFgG4MTLoLy8QnqINF4qLm4_umRJM7DJHo"
 updater = telegram.ext.Updater(TOKEN, use_context=True)
 disp = updater.dispatcher
 datos = json.load(open("datos.json"))
@@ -168,6 +168,36 @@ def send_melo_hind(update, context):
     with open(ucq + ".mp3", "rb") as audio_file:
         context.bot.send_voice(chat_id=update.callback_query["message"]["chat"]["id"], voice=audio_file,
                                caption=cap)
+
+
+def books(update, context):
+    update.callback_query.answer()
+    keyboard = base_key(two=True)
+    ucq = update.callback_query["data"]
+    k2 = []
+    for i in get_lst("bib", clear=True):
+        k2.append(InlineKeyboardButton(i, callback_data=(ucq + "/" + i)[::-1]))
+        disp.add_handler(telegram.ext.CallbackQueryHandler(pattern=(ucq + "/" + i)[::-1], callback=send_pdf))
+
+    keyboard = slice_lst(k2, keyboard, 2)
+    reply_markup = InlineKeyboardMarkup(keyboard)
+    update.callback_query.edit_message_text(text="\U0001f916 <strong>Tengo estos libros:</strong>",
+                                            reply_markup=reply_markup, parse_mode=telegram.ParseMode.HTML)
+
+
+def send_pdf(update, context):
+    update.callback_query.answer()
+    ucq = update.callback_query["data"][::-1]
+    keyboard = base_key("Atras", "<" + ucq.split("/")[0] + "/" + ucq.split("/")[1], two=False)
+    reply_markup = InlineKeyboardMarkup(keyboard)
+    update.callback_query.edit_message_text(text="\U0001f916 <strong>Elegí una opción:</strong>",
+                                            reply_markup=reply_markup,
+                                            parse_mode=telegram.ParseMode.HTML)
+
+    with open(ucq + ".pdf", "rb") as pdf_file:
+        context.bot.send_document(chat_id=update.callback_query["message"]["chat"]["id"], document=pdf_file,
+                                 caption=u'📖 🤓 ' + ucq.split("/")[1])
+
 
 
 def working(update, context):

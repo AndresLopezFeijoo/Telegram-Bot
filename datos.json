@@ -5,10 +5,10 @@
             "send_lect"],
   "years":  ["I", "II", "III", "IV", "Audioperceptiva"],
   "hind": ["III", "IV", "V", "VI", "VII", "VIII", "IX", "X"],
-  "melo": ["III", "V", "VI", "VII", "VIII", "IX", "X", "XI"],
+  "melo": ["II","III", "IV", "V", "VI", "VII", "VIII", "IX", "X", "XI"],
   "caption": [" completo", " Comapases 1, 2 y primer sonido del 3", " Compases 3, 4 y primer sonido del 5",
               " Compases 5, 6 y primer sonido del 7", " Compases 7 y 8"],
   "start": [["Dictados", "dict", "mel_rit"], ["Hindemith", "hind", "chapters"], ["Melo Castillo", "melo", "chapters"],
             ["Lecturas", "lect", "mel_rit"], ["Solfeos", "solf", "working"], ["Teoria", "teoria", "working"],
-            ["Terminar", "end", "end"]]
+            ["Terminar", "end", "end"], ["Bibliografia", "bib", "books"]]
 }
