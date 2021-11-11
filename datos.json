@@ -1,13 +1,21 @@
 {
   "dict": [["Melódicos", "Rítmicos"], ["dm", "dr"], "Estos son los dictados que te puedo ofrecer:",
             "send_dict"],
+
   "lect": [["Melódicas", "Rítmicas"], ["lm", "lr"], "Estas son las lecturas que te puedo ofrecer:",
             "send_lect"],
+
   "years":  ["I", "II", "III", "IV", "Audioperceptiva"],
+
   "hind": ["III", "IV", "V", "VI", "VII", "VIII", "IX", "X"],
+
   "melo": ["II","III", "IV", "V", "VI", "VII", "VIII", "IX", "X", "XI"],
-  "caption": [" completo", " Comapases 1, 2 y primer sonido del 3", " Compases 3, 4 y primer sonido del 5",
+
+  "captionm": [" completo", " Comapases 1, 2 y primer sonido del 3", " Compases 3, 4 y primer sonido del 5",
               " Compases 5, 6 y primer sonido del 7", " Compases 7 y 8"],
+
+  "captionr": [" completo", " Comapases 1 y 2", " Compases 3 y 4", " Compases 5 y 6", " Compases 7 y 8"],
+
   "start": [["Dictados", "dict", "mel_rit"], ["Hindemith", "hind", "chapters"], ["Melo Castillo", "melo", "chapters"],
             ["Lecturas", "lect", "mel_rit"], ["Solfeos", "solf", "working"], ["Teoria", "teoria", "working"],
             ["Terminar", "end", "end"], ["Bibliografia", "bib", "books"]]
