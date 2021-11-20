@@ -384,5 +384,5 @@ disp.add_handler(telegram.ext.MessageHandler(telegram.ext.Filters.text, handle_m
 disp.add_handler(telegram.ext.CallbackQueryHandler(pattern="home", callback=start_over))
 
 
-updater.start_polling(drop_pending_updates=True)
+updater.start_polling()#drop_pending_updates=True
 updater.idle()
