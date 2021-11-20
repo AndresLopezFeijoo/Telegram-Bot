@@ -18,5 +18,21 @@
 
   "start": [["Dictados", "dict", "mel_rit"], ["Hindemith", "hind", "chapters"], ["Melo Castillo", "melo", "chapters"],
             ["Lecturas", "lect", "mel_rit"], ["Solfeos", "solf", "working"], ["Teoria", "teoria", "working"],
-            ["Terminar", "end", "end"], ["Bibliografia", "bib", "books"]]
+            ["Terminar", "end", "end"], ["Bibliografia", "bib", "books"], ["Secuencias", "seq", "root"]],
+
+  "root": ["Dob", "Reb", "Mib", "Fab", "Solb", "Lab", "Sib", "Do", "Re", "Mi", "Fa", "Sol", "La", "Si",
+            "Do#", "Re#", "Mi#", "Fa#", "Sol#", "La#", "Si#"],
+  "roots": ["Cb", "Db", "Eb", "Fb", "Gb", "Ab", "Bb", "C", "D", "E", "F", "G", "A", "B",
+            "C#", "D#", "E#", "F#", "G#", "A#", "B#"],
+  "modos": ["Mayor", "Menor natural", "Menor armónica"],
+  "alteraciones": {"do bèmol": "dob", "re bèmol": "reb", "mi bèmol": "mib", "fa bèmol": "fab", "sol bèmol": "solb",
+                   "la bèmol": "lab", "si bèmol": "sib", "do doble bèmol": "dobb", "re doble bèmol": "rebb",
+                   "mi doble bèmol": "mibb", "fa doble bèmol": "fabb", "sol doble bèmol": "solbb",
+                   "la doble bèmol": "labb", "si doble bèmol": "sibb", "do sostenido": "do#", "re sostenido": "re#",
+                   "mi sostenido": "mi#", "fa sostenido": "fa#", "sol sostenido": "sol#", "la sostenido": "la#",
+                   "si sostenido": "si#", "do doble sostenido": "doX", "re doble sostenido": "reX",
+                   "mi doble sostenido": "miX", "fa doble sostenido": "faX", "sol doble sostenido": "solX",
+                   "la doble sostenido": "laX", "si doble sostenido": "siX"
+       },
+  "modes": {"Mayor": "scale.MajorScale", "Menor natural": "scale.MinorScale", "Menor armónica": "scale.MelodicMinorScale"}
 }

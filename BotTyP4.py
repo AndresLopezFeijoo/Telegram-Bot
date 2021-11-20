@@ -3,6 +3,8 @@ import json
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import ConversationHandler
 from Tools import slice_lst, get_lst, base_key
+from SeqClass import Sequence, nice_name
+import os
 
 
 TOKEN = json.load(open("token.json"))["tok"]
@@ -208,7 +210,6 @@ def send_pdf(update, context):
                                       reply_markup=reply_markup, parse_mode=telegram.ParseMode.HTML)
 
 
-
 def working(update, context):
     update.callback_query.answer()
     keyboard = [[InlineKeyboardButton("Home", callback_data="home")],
@@ -234,6 +235,119 @@ def start(update, context):
     reply_markup = InlineKeyboardMarkup(k2)
     context.bot.sendMessage(chat_id=update.message.chat_id, text=msg, reply_markup=reply_markup,
                             parse_mode=telegram.ParseMode.HTML)
+
+
+def root(update, context):
+    update.callback_query.answer()
+    context.user_data[0] = update.callback_query["data"]
+    keyboard = base_key(two=True)
+    k2 = []
+    for i in datos["roots"]:
+        k2.append(InlineKeyboardButton(i, callback_data="e" + i))
+        disp.add_handler(telegram.ext.CallbackQueryHandler(pattern="e" + i, callback=mode))
+    keyboard = slice_lst(k2, keyboard, 7)
+    reply_markup = InlineKeyboardMarkup(keyboard)
+    update.callback_query.edit_message_text(
+        text="\U0001f916 <strong>Eligí una fundamental.....</strong>",
+        reply_markup=reply_markup, parse_mode=telegram.ParseMode.HTML)
+
+
+def mode(update, context):
+    update.callback_query.answer()
+    c = context.user_data
+    c[1] = update.callback_query["data"][1:]
+    keyboard = base_key("Atras", c[0], two=False)
+    k2 = []
+    for i in datos["modos"]:
+        k2.append(InlineKeyboardButton(i, callback_data="s" + i))
+        disp.add_handler(telegram.ext.CallbackQueryHandler(pattern="s" + i, callback=n))
+
+    keyboard = slice_lst(k2, keyboard, 1)
+    reply_markup = InlineKeyboardMarkup(keyboard)
+    update.callback_query.edit_message_text(
+        text="\U0001f916 <strong>Eligí una escala .....</strong>",
+        reply_markup=reply_markup, parse_mode=telegram.ParseMode.HTML)
+
+
+def n(update, context):
+    update.callback_query.answer()
+    c = context.user_data
+    c[2] = update.callback_query["data"][1:]
+    keyboard = base_key("Atras", "e" + c[1], two=False)
+    k2 = []
+    for i in range(7):
+        if i > 0:
+            k2.append(InlineKeyboardButton(i, callback_data="t" + str(i)))
+            disp.add_handler(telegram.ext.CallbackQueryHandler(pattern="t" + str(i), callback=fundamental))
+
+    keyboard.append(k2)
+    reply_markup = InlineKeyboardMarkup(keyboard)
+    update.callback_query.edit_message_text(
+        text="\U0001f916 <strong>Cuantas notas querés que te mande?</strong>",
+        reply_markup=reply_markup, parse_mode=telegram.ParseMode.HTML)
+
+
+def fundamental(update, context):
+    update.callback_query.answer()
+    c = context.user_data
+    c[3] = update.callback_query["data"][1:]
+    print(c)
+    keyboard = base_key("Atras", "s" + c[2], two=False)
+    k2 = [(InlineKeyboardButton("Si", callback_data="True")), (InlineKeyboardButton("No", callback_data="False"))]
+    disp.add_handler(telegram.ext.CallbackQueryHandler(pattern="True", callback=snd_scl))
+    disp.add_handler(telegram.ext.CallbackQueryHandler(pattern="False", callback=snd_scl))
+    keyboard.append(k2)
+    reply_markup = InlineKeyboardMarkup(keyboard)
+    update.callback_query.edit_message_text(
+        text="\U0001f916 <strong>Querés que la secuencia empiece siempre con la fundamental?</strong>",
+        reply_markup=reply_markup, parse_mode=telegram.ParseMode.HTML)
+
+
+def snd_scl(update, context):
+    update.callback_query.answer()
+    c = context.user_data
+    c[4] = update.callback_query["data"]
+    print(c)
+    seq = Sequence(c[1], c[2], int(c[3]), c[4])
+    update.callback_query.edit_message_text(text="\U0001f916 <strong>Esperá que primero te mando la escala!! </strong>",
+                                            parse_mode=telegram.ParseMode.HTML)
+    seq.get_scale_audio()
+    with open("escala.mp3", "rb") as audio_file:
+        context.bot.send_voice(chat_id=update.callback_query["message"]["chat"]["id"], voice=audio_file,
+                               caption="<strong>" + c[1] + " " + c[2] + ":</strong>" + " " +
+                                       nice_name(seq.scale_pitches), parse_mode=telegram.ParseMode.HTML)
+        os.remove("escala.mp3")
+    return snd_seq(update, context)
+
+def snd_seq(update, context):
+    update.callback_query.answer()
+    c = context.user_data
+    seq = Sequence(c[1], c[2], int(c[3]), c[4])
+    c[5] = nice_name(seq.seq_pitches)
+    context.bot.sendMessage(chat_id=update.callback_query["message"]["chat"]["id"],
+                            text="\U0001f916 <strong>Paciencia, estoy eligiendo sonidos para vos...."
+                            "Que notas son? </strong>", parse_mode=telegram.ParseMode.HTML)
+    seq.get_seq_audio()
+    with open("seq.mp3", "rb") as audio_file:
+        context.bot.send_voice(chat_id=update.callback_query["message"]["chat"]["id"], voice=audio_file,
+                               caption="Secuencia de notas en " + c[1] + " " + c[2])
+        os.remove("seq.mp3")
+    keyboard = base_key("Solución", "y", two=False)
+    disp.add_handler(telegram.ext.CallbackQueryHandler(pattern="y", callback=notes))
+    reply_markup = InlineKeyboardMarkup(keyboard)
+    context.bot.sendMessage(chat_id=update.callback_query["message"]["chat"]["id"],
+                            text="\U0001f916 <strong>Waiting orders .......</strong>",
+                            reply_markup=reply_markup, parse_mode=telegram.ParseMode.HTML)
+
+
+def notes(update, context):
+    update.callback_query.answer()
+    c = context.user_data
+    keyboard = base_key("Otro!!", "j", two=False)
+    disp.add_handler(telegram.ext.CallbackQueryHandler(pattern="j", callback=snd_seq))
+    reply_markup = InlineKeyboardMarkup(keyboard)
+    update.callback_query.edit_message_text(text="\U0001f916 <strong>" + c[5] + "</strong>",
+                                            reply_markup=reply_markup, parse_mode=telegram.ParseMode.HTML)
 
 
 def start_over(update, context):
@@ -270,5 +384,5 @@ disp.add_handler(telegram.ext.MessageHandler(telegram.ext.Filters.text, handle_m
 disp.add_handler(telegram.ext.CallbackQueryHandler(pattern="home", callback=start_over))
 
 
-updater.start_polling()
+updater.start_polling(drop_pending_updates=True)
 updater.idle()
