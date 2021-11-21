@@ -45,7 +45,7 @@ class Sequence:
             st.append(note.Note(i))
         st.write("midi", "escala.mid")
         fs = FluidSynth()
-        s = fs.midi_to_audio('escala.mid', 'escala.mp3')
+        s = fs.midi_to_audio('escala.mid', 'escala.oog')
         os.remove("escala.mid")
         return s
 
@@ -55,6 +55,6 @@ class Sequence:
             st.append(note.Note(i, quarterLength=2))
         st.write("midi", "seq.mid")
         fs = FluidSynth()
-        s = fs.midi_to_audio("seq.mid", "seq.mp3")
+        s = fs.midi_to_audio("seq.mid", "seq.oog")
         os.remove("seq.mid")
         return s
