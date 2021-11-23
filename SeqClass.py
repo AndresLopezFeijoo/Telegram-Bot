@@ -4,8 +4,7 @@ import os
 import random
 import json
 import itertools
-from pydub import AudioSegment
-
+import timeit
 
 alt = json.load(open("datos.json"))["alteraciones"]
 modes = json.load(open("datos.json"))["modes"]
@@ -48,8 +47,6 @@ class Sequence:
         st.write("midi", "escala.mid")
         fs = FluidSynth()
         s = fs.midi_to_audio("escala.mid", "escala.wav")
-
-        AudioSegment.from_mp3("escala.mid").export("escala.mp3", format="mp3")
         #s = fs.midi_to_audio("escala.mid", "escalas/menor armonica/" + n + ".wav")
         os.remove("escala.mid")
         return s
@@ -59,8 +56,12 @@ class Sequence:
         for i in self.seq_names:
             st.append(note.Note(i, quarterLength=2))
         st.write("midi", "seq.mid")
+        start = timeit.default_timer()
         fs = FluidSynth()
-        s = fs.midi_to_audio("seq.mid", "seq.wav")
+        s = fs.midi_to_audio("seq.mid", "seq.flac")
+        #s = fs.midi_to_audio("seq.mid", "seq" .wav")
+        stop = timeit.default_timer()
+        print('Time: ', stop - start)
         os.remove("seq.mid")
         return s
 
@@ -69,7 +70,7 @@ class Sequence:
 #    e.get_scale_audio(i)
 
 
-e = Sequence("c", "Menor armónica", 1, "True")
-e.get_scale_audio()
+#e = Sequence("c", "Menor armónica", 1, "True")
+#e.get_scale_audio()
 
 

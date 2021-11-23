@@ -309,7 +309,7 @@ def snd_scl(update, context):
     c[4] = update.callback_query["data"]
     print(c)
     seq = Sequence(c[1], c[2], int(c[3]), c[4])
-    update.callback_query.edit_message_text(text="\U0001f916 <strong>Esperá que primero te mando la escala!! </strong>",
+    update.callback_query.edit_message_text(text="\U0001f916 <strong>Primero te mando la escala!! </strong>",
                                             parse_mode=telegram.ParseMode.HTML)
     #seq.get_scale_audio()
     with open("escalas/" + c[2] + "/" + c[1] + ".mp3", "rb") as audio_file:
@@ -328,10 +328,10 @@ def snd_seq(update, context):
                             text="\U0001f916 <strong>Paciencia, estoy eligiendo sonidos para vos...."
                             "Que notas son? </strong>", parse_mode=telegram.ParseMode.HTML)
     seq.get_seq_audio()
-    with open("seq.wav", "rb") as audio_file:
+    with open("seq.flac", "rb") as audio_file:
         context.bot.send_voice(chat_id=update.callback_query["message"]["chat"]["id"], voice=audio_file,
                                caption="Secuencia de notas en " + c[1] + " " + c[2])
-        os.remove("seq.wav")
+        os.remove("seq.flac")
     keyboard = base_key("Solución", "y", two=False)
     disp.add_handler(telegram.ext.CallbackQueryHandler(pattern="y", callback=notes))
     reply_markup = InlineKeyboardMarkup(keyboard)
