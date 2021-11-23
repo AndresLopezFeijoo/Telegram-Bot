@@ -34,5 +34,5 @@
                    "mi doble sostenido": "miX", "fa doble sostenido": "faX", "sol doble sostenido": "solX",
                    "la doble sostenido": "laX", "si doble sostenido": "siX"
        },
-  "modes": {"Mayor": "scale.MajorScale", "Menor natural": "scale.MinorScale", "Menor armónica": "scale.MelodicMinorScale"}
+  "modes": {"Mayor": "scale.MajorScale", "Menor natural": "scale.MinorScale", "Menor armónica": "scale.HarmonicMinorScale"}
 }

@@ -4,6 +4,8 @@ import os
 import random
 import json
 import itertools
+from pydub import AudioSegment
+
 
 alt = json.load(open("datos.json"))["alteraciones"]
 modes = json.load(open("datos.json"))["modes"]
@@ -45,7 +47,10 @@ class Sequence:
             st.append(note.Note(i))
         st.write("midi", "escala.mid")
         fs = FluidSynth()
-        s = fs.midi_to_audio('escala.mid', 'escala.oog')
+        s = fs.midi_to_audio("escala.mid", "escala.wav")
+
+        AudioSegment.from_mp3("escala.mid").export("escala.mp3", format="mp3")
+        #s = fs.midi_to_audio("escala.mid", "escalas/menor armonica/" + n + ".wav")
         os.remove("escala.mid")
         return s
 
@@ -55,6 +60,16 @@ class Sequence:
             st.append(note.Note(i, quarterLength=2))
         st.write("midi", "seq.mid")
         fs = FluidSynth()
-        s = fs.midi_to_audio("seq.mid", "seq.oog")
+        s = fs.midi_to_audio("seq.mid", "seq.wav")
         os.remove("seq.mid")
         return s
+
+#for i in json.load(open("datos.json"))["roots"]:
+#    e = Sequence(i, "Menor armónica", 1, "True")
+#    e.get_scale_audio(i)
+
+
+e = Sequence("c", "Menor armónica", 1, "True")
+e.get_scale_audio()
+
+
