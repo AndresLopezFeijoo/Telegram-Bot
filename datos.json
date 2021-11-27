@@ -1,9 +1,7 @@
 {
-  "dict": [["Melódicos", "Rítmicos"], ["dm", "dr"], "Estos son los dictados que te puedo ofrecer:",
-            "send_dict"],
+  "dict": [["Melódicos", "Rítmicos"], ["m", "r"], "Estos son los dictados que te puedo ofrecer:"],
 
-  "lect": [["Melódicas", "Rítmicas"], ["lm", "lr"], "Estas son las lecturas que te puedo ofrecer:",
-            "send_lect"],
+  "lect": [["Melódicas", "Rítmicas"], ["m", "r"], "Estas son las lecturas que te puedo ofrecer:"],
 
   "years":  ["I", "II", "III", "IV", "Audioperceptiva"],
 
