@@ -53,8 +53,8 @@ def dic_lec_lst(update, context):
     keyboard = base_key("Atras", c[1][1:-1], two=False)
     k2 = []
     for i in get_lst(c[0] + c[1] + c[2], clear=True):
-        k2.append(InlineKeyboardButton(i, callback_data="." + i))
-        disp.add_handler(telegram.ext.CallbackQueryHandler(pattern="." + i, callback=send_dic_lec))
+        k2.append(InlineKeyboardButton(i, callback_data="o" + i))
+        disp.add_handler(telegram.ext.CallbackQueryHandler(pattern="o" + i, callback=send_dic_lec))
     keyboard = slice_lst(k2, keyboard, 4)
     reply_markup = InlineKeyboardMarkup(keyboard)
     update.callback_query.edit_message_text(text="\U0001f916<strong>" + datos[c[0]][2] + "</strong>",
