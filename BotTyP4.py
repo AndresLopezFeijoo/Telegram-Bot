@@ -7,7 +7,7 @@ from SeqClass import Sequence, nice_name
 import os
 import random
 
-TOKEN = json.load(open("token.json"))["tok"]
+TOKEN = json.load(open("token.json"))["testtok"]
 updater = telegram.ext.Updater(TOKEN, use_context=True)
 disp = updater.dispatcher
 datos = json.load(open("datos.json"))
@@ -18,6 +18,7 @@ def mel_rit(update, context):
     update.callback_query.answer()
     c = context.user_data
     c[0] = update.callback_query["data"]
+    print(c)
     keyboard = base_key(two=True)
     k2 = []
     for i, j in zip(datos[c[0]][0], datos[c[0]][1]):
@@ -34,7 +35,8 @@ def mel_rit(update, context):
 def años(update, context):
     update.callback_query.answer()
     c = context.user_data
-    c[1] = "/" + update.callback_query["data"] + "/"
+    c[1] = update.callback_query["data"]
+    print(c)
     keyboard = base_key("Atras", c[0], two=False)
     k2 = []
     for i in datos["years"]:
@@ -49,37 +51,50 @@ def años(update, context):
 def dic_lec_lst(update, context):
     update.callback_query.answer()
     c = context.user_data
-    c[2] = update.callback_query["data"][1:] + "/"
-    keyboard = base_key("Atras", c[1][1:-1], two=False)
+    c[2] = update.callback_query["data"][1:]
+    print(c)
+    a = get_lst(c[0] + "/" + c[1] + "/" + c[2], clear=True)
+    b = len(a) > 0
+    keyboard = base_key("Atras", c[1], two=False)
     k2 = []
-    for i in get_lst(c[0] + c[1] + c[2], clear=True):
-        k2.append(InlineKeyboardButton(i, callback_data="o" + i))
-        disp.add_handler(telegram.ext.CallbackQueryHandler(pattern="o" + i, callback=send_dic_lec))
-    keyboard = slice_lst(k2, keyboard, 4)
-    reply_markup = InlineKeyboardMarkup(keyboard)
-    update.callback_query.edit_message_text(text="\U0001f916<strong>" + datos[c[0]][2] + "</strong>",
-                                            reply_markup=reply_markup, parse_mode=telegram.ParseMode.HTML)
+    if b:
+        for i in a:
+            k2.append(InlineKeyboardButton(i, callback_data="o" + i))
+            disp.add_handler(telegram.ext.CallbackQueryHandler(pattern="o" + i, callback=send_dic_lec))
+        keyboard = slice_lst(k2, keyboard, 4)
+        reply_markup = InlineKeyboardMarkup(keyboard)
+        update.callback_query.edit_message_text(text="\U0001f916<strong>" + datos[c[0]][2] + "</strong>",
+                                                reply_markup=reply_markup, parse_mode=telegram.ParseMode.HTML)
+    else:
+        reply_markup = InlineKeyboardMarkup(keyboard)
+        update.callback_query.edit_message_text(text="\U0001f916<strong>No tengo material en esta categoria....."
+                                                "</strong>",
+                                                reply_markup=reply_markup, parse_mode=telegram.ParseMode.HTML)
+
+
 
 
 def send_dic_lec(update, context):
     update.callback_query.answer()
     c = context.user_data
     c[3] = update.callback_query["data"][1:]
+    print(c)
+    path = c[0] + "/" + c[1] + "/" + c[2] + "/" + c[3]
     update.callback_query.edit_message_text(text="\U0001f916 <strong>Ahí va!! </strong>",
                                             parse_mode=telegram.ParseMode.HTML)
     if c[0] == "dict":
-        if c[1] == "/m/":
+        if c[1] == "m":
             nro = u"\U0001F3BC " + c[2] + " / " + c[3] + u" \U0001F449"
             cp = "captionm"
-        elif c[1] == "/r/":
+        elif c[1] == "r":
             nro = u"\U0001F941 " + c[2] + " / " + c[3] + u" \U0001F449"
             cp = "captionr"
-        for i, j in zip(get_lst(c[0] + c[1] + c[2] + c[3], clear=False), datos[cp]):
-            with open(c[0] + c[1] + c[2] + c[3] + "/" + i, "rb") as audio_file:
+        for i, j in zip(get_lst(path, clear=False), datos[cp]):
+            with open(path + "/" + i, "rb") as audio_file:
                 context.bot.send_voice(chat_id=update.callback_query["message"]["chat"]["id"], voice=audio_file,
                                        caption=nro + j)
 
-        keyboard = [[InlineKeyboardButton("volver a dictados", callback_data="dict")],
+        keyboard = [[InlineKeyboardButton("Volver a dictados", callback_data="dict")],
                     [InlineKeyboardButton("Tonalidad y/o compás", callback_data="tyc")],
                     [InlineKeyboardButton("Solución", callback_data="sol")]]
         disp.add_handler(telegram.ext.CallbackQueryHandler(pattern="tyc", callback=send_tyc))
@@ -90,12 +105,12 @@ def send_dic_lec(update, context):
                                 text="\U0001f916 <strong>Elegí una opción</strong>",
                                 reply_markup=reply_markup, parse_mode=telegram.ParseMode.HTML)
     elif c[0] == "lect":
-        if c[1] == "/m/":
-            msg = u'\U0001F440 \U0001F3BC' + " Letra: " + c[3]
-        elif c[1] == "/r/":
+        if c[1] == "m":
+            msg = u'\U0001F440 \U0001F3BC' + " Nro: " + c[3]
+        elif c[1] == "r":
             msg = u'\U0001F440 \U0001F941' + " Letra: " + c[3]
 
-        with open(c[0] + c[1] + c[2] + c[3] + ".png", "rb") as photo_file:
+        with open(path + ".png", "rb") as photo_file:
             context.bot.send_photo(chat_id=update.callback_query["message"]["chat"]["id"], photo=photo_file,
                                    caption=msg)
         keyboard = base_key("Volver a lecturas", "lect", two=False)
@@ -108,7 +123,8 @@ def send_dic_lec(update, context):
 def send_sol(update, context):
     update.callback_query.answer()
     c = context.user_data
-    path = c[1] + c[2] + c[3]
+    print(c)
+    path = c[1] + "/" + c[2] + "/" + c[3]
     update.callback_query.edit_message_text(text="\U0001f916 <strong>A ver.........</strong>",
                                             parse_mode=telegram.ParseMode.HTML)
     with open("dictimag/" + path + ".png", "rb") as photo_file:
@@ -128,18 +144,20 @@ def send_tyc(update, context):
     keyboard = [[InlineKeyboardButton("volver a dictados", callback_data="dict")],
                 [InlineKeyboardButton("Solución", callback_data="sol")]]
     reply_markup = InlineKeyboardMarkup(keyboard, remove_keyboard=True)
-    update.callback_query.edit_message_text(text=" \U0001f916 <strong>Está en: " + tyc[c[1]][c[2][:-1]][c[3]] +
+    update.callback_query.edit_message_text(text=" \U0001f916 <strong>Está en: " + tyc[c[1]][c[2]][c[3]] +
                                             "</strong>", reply_markup=reply_markup, parse_mode=telegram.ParseMode.HTML)
 
 
 def chapters(update, context):
     update.callback_query.answer()
-    ucq = update.callback_query["data"]
+    c = context.user_data
+    c[0] = update.callback_query["data"]
+    print(c)
     keyboard = base_key(two=True)
     k2 = []
-    for i in datos[ucq]:
-        k2.append(InlineKeyboardButton("Cap" + i, callback_data="<" + ucq + "/" + i))
-        disp.add_handler(telegram.ext.CallbackQueryHandler(pattern="<" + ucq + "/" + i, callback=melo_hind_list))
+    for i in datos[c[0]]:
+        k2.append(InlineKeyboardButton("Cap" + i, callback_data="<" + i))
+        disp.add_handler(telegram.ext.CallbackQueryHandler(pattern="<", callback=melo_hind_list))
     keyboard = slice_lst(k2, keyboard, 4)
     reply_markup = InlineKeyboardMarkup(keyboard)
     update.callback_query.edit_message_text(text="\U0001f916 <strong>Elegí un capítulo</strong>",
@@ -148,13 +166,15 @@ def chapters(update, context):
 
 def melo_hind_list(update, context):
     update.callback_query.answer()
-    ucq = update.callback_query["data"][1:]
-    keyboard = base_key("Atras", ucq.split("/")[0], two=False)
+    c = context.user_data
+    c[1] = update.callback_query["data"][1:]
+    print(c)
+    keyboard = base_key("Atras", c[0], two=False)
     k2 = []
     try:
-        for i in get_lst(ucq, clear=True):
-            k2.append(InlineKeyboardButton(i, callback_data=(ucq + "/" + i)[::-1]))
-            disp.add_handler(telegram.ext.CallbackQueryHandler(pattern=(ucq + "/" + i)[::-1], callback=send_melo_hind))
+        for i in get_lst(c[0] + "/" + c[1], clear=True):
+            k2.append(InlineKeyboardButton(i, callback_data=">" + i))
+            disp.add_handler(telegram.ext.CallbackQueryHandler(pattern=(">" + i), callback=send_melo_hind))
         keyboard = slice_lst(k2, keyboard, 3)
         reply_markup = InlineKeyboardMarkup(keyboard)
         update.callback_query.edit_message_text(text="\U0001f916 <strong>Puedo ofrecerte estos ejercicios:</strong>",
@@ -165,19 +185,21 @@ def melo_hind_list(update, context):
 
 def send_melo_hind(update, context):
     update.callback_query.answer()
-    ucq = update.callback_query["data"][::-1]
+    c = context.user_data
+    c[2] = update.callback_query["data"][1:]
+    print(c)
     update.callback_query.edit_message_text(text="\U0001f916 <strong>As2d2 procesando...</strong>",
                                             parse_mode=telegram.ParseMode.HTML)
-    if ucq.split("/")[0] == "melo":
-        cap = u'\U0001F941' + " Melo Castillo " + ucq.split("/")[2]
-    elif ucq.split("/")[0] == "hind":
-        cap = u'\U0001F941' + " Hindemith " + ucq.split("/")[2]
+    if c[0] == "melo":
+        cap = u'\U0001F941' + " Melo Castillo " + c[2]
+    elif c[0] == "hind":
+        cap = u'\U0001F941' + " Hindemith " + c[2]
 
-    with open(ucq + ".mp3", "rb") as audio_file:
+    with open(c[0] + "/" + c[1] + "/" + c[2] + ".mp3", "rb") as audio_file:
         context.bot.send_voice(chat_id=update.callback_query["message"]["chat"]["id"], voice=audio_file,
                                caption=cap)
 
-    keyboard = base_key("Atras", "<" + ucq.split("/")[0] + "/" + ucq.split("/")[1], two=False)
+    keyboard = base_key("Atras", "<" + c[1], two=False)
     reply_markup = InlineKeyboardMarkup(keyboard)
     context.bot.sendMessage(chat_id=update.callback_query["message"]["chat"]["id"],
                             text="\U0001f916 <strong>Hecho!!, Como seguimos...?</strong>",
@@ -186,12 +208,14 @@ def send_melo_hind(update, context):
 
 def books(update, context):
     update.callback_query.answer()
+    c = context.user_data
+    c[0] = update.callback_query["data"]
+    print(c)
     keyboard = base_key(two=True)
-    ucq = update.callback_query["data"]
     k2 = []
-    for i in get_lst("bib", clear=True):
-        k2.append(InlineKeyboardButton(i, callback_data=(ucq + "/" + i)[::-1]))
-        disp.add_handler(telegram.ext.CallbackQueryHandler(pattern=(ucq + "/" + i)[::-1], callback=send_pdf))
+    for i in get_lst(c[0], clear=True):
+        k2.append(InlineKeyboardButton(i, callback_data="b" + i))
+        disp.add_handler(telegram.ext.CallbackQueryHandler(pattern=("b" + i), callback=send_pdf))
 
     keyboard = slice_lst(k2, keyboard, 1)
     reply_markup = InlineKeyboardMarkup(keyboard)
@@ -201,13 +225,16 @@ def books(update, context):
 
 def send_pdf(update, context):
     update.callback_query.answer()
-    ucq = update.callback_query["data"][::-1]
-    update.callback_query.edit_message_text(text="\U0001f916 <strong>Esperame que lo tengo que buscar...</strong>",
+    c = context.user_data
+    c[1] = update.callback_query["data"][1:]
+    print(c)
+    update.callback_query.edit_message_text(text="\U0001f916 <strong>Esperame que lo tengo que buscar...\n"
+                                                 "Mi casa es un lio de papeles</strong>",
                                             parse_mode=telegram.ParseMode.HTML)
-    with open(ucq + ".pdf", "rb") as pdf_file:
+    with open(c[0] + "/" + c[1] + ".pdf", "rb") as pdf_file:
         context.bot.send_document(chat_id=update.callback_query["message"]["chat"]["id"], document=pdf_file,
-                                  caption=u'📖 🤓 ' + ucq.split("/")[1])
-    keyboard = base_key("Atras", "<" + ucq.split("/")[0] + "/" + ucq.split("/")[1], two=False)
+                                  caption=u'📖 🤓 ' + c[1])
+    keyboard = base_key("Atras", c[0], two=False)
     reply_markup = InlineKeyboardMarkup(keyboard)
     context.bot.sendMessage(chat_id=update.callback_query["message"]["chat"]["id"],
                             text="\U0001f916 <strong>Ahí está!! Que mas....?</strong>",
