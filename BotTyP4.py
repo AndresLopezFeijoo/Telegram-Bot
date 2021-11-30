@@ -7,7 +7,7 @@ from SeqClass import Sequence, nice_name
 import os
 import random
 
-TOKEN = json.load(open("token.json"))["testtok"]
+TOKEN = json.load(open("token.json"))["tok"]
 updater = telegram.ext.Updater(TOKEN, use_context=True)
 disp = updater.dispatcher
 datos = json.load(open("datos.json"))
