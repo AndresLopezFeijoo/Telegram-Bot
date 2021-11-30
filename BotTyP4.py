@@ -314,11 +314,11 @@ def n(update, context):
             k2.append(InlineKeyboardButton(i, callback_data="f" + str(i)))
             disp.add_handler(telegram.ext.CallbackQueryHandler(pattern="f" + str(i), callback=snd_scl))
     k2.append(InlineKeyboardButton("Hard", callback_data="f6"))
-    disp.add_handler(telegram.ext.CallbackQueryHandler(pattern="t6", callback=snd_scl))
+    disp.add_handler(telegram.ext.CallbackQueryHandler(pattern="f6", callback=snd_scl))
     keyboard.append(k2)
     reply_markup = InlineKeyboardMarkup(keyboard)
     update.callback_query.edit_message_text(
-        text="\U0001f916 <strong>Cuantas notas te mando?\n3 y 4 y 5 son secuencias que comienzan siempre "
+        text="\U0001f916 <strong>Cuantas notas te mando?\n3, 4 y 5 son secuencias que comienzan siempre "
              "en la tónica.\nHard son seis notas y puede empezar por cualquier sonido!!!</strong>",
         reply_markup=reply_markup, parse_mode=telegram.ParseMode.HTML)
 
@@ -342,7 +342,7 @@ def snd_seq(update, context):
     c = context.user_data
     context.bot.sendMessage(chat_id=update.callback_query["message"]["chat"]["id"],
                             text="\U0001f916 <strong>Elegí estos sonidos para vos....\n"
-                                 "Que notas son? </strong>", parse_mode=telegram.ParseMode.HTML)
+                                 "Cuando sepas que notas son pedime la solución </strong>", parse_mode=telegram.ParseMode.HTML)
     file = random.choice(os.listdir("secuencias/" + c[1] + "/" + c[2] + "/" + c[3]))
     with open("secuencias/" + c[1] + "/" + c[2] + "/" + c[3] + "/" + file, "rb") as audio_file:
         context.bot.send_voice(chat_id=update.callback_query["message"]["chat"]["id"], voice=audio_file,
@@ -369,7 +369,6 @@ def notes(update, context):
 
 
 def start_over(update, context):
-    """Para volver a empezar pero no ingresando un mensaje"""
     update.callback_query.answer()
     k = [InlineKeyboardButton(text="Programa", url="https://cmbsas-caba.infd.edu.ar/sitio/nivel-medio/")]
     k2 = []
