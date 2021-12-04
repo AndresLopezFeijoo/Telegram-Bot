@@ -1,10 +1,5 @@
 import os
-import telegram.ext
 from telegram import InlineKeyboardButton
-
-TOKEN = "1965896728:AAFgG4MTLoLy8QnqINF4qLm4_umRJM7DJHo"
-updater = telegram.ext.Updater(TOKEN, use_context=True)
-disp = updater.dispatcher
 
 
 def slice_lst(lst, lst2, step):
