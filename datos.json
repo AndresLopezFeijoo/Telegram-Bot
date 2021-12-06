@@ -15,7 +15,7 @@
   "captionr": [" completo", " Comapases 1 y 2", " Compases 3 y 4", " Compases 5 y 6", " Compases 7 y 8"],
 
   "start": [["Dictados", "dict", "mel_rit"], ["Hindemith", "hind", "chapters"], ["Melo Castillo", "melo", "chapters"],
-            ["Lecturas", "lect", "mel_rit"], ["Solfeos", "solf", "working"], ["Teoria", "teoria", "working"],
+            ["Lecturas", "lect", "mel_rit"], ["Solfeos", "solf", "solf"], ["Teoria", "teoria", "working"],
             ["Bibliografia", "bib", "books"], ["Secuencias", "seq", "root"], ["Terminar", "end", "end"]],
 
   "root": ["Dob", "Reb", "Mib", "Fab", "Solb", "Lab", "Sib", "Do", "Re", "Mi", "Fa", "Sol", "La", "Si",
@@ -32,5 +32,6 @@
                    "mi doble sostenido": "miX", "fa doble sostenido": "faX", "sol doble sostenido": "solX",
                    "la doble sostenido": "laX", "si doble sostenido": "siX"
        },
-  "modes": {"Mayor": "scale.MajorScale", "Menor natural": "scale.MinorScale", "Menor armonica": "scale.HarmonicMinorScale"}
+  "modes": {"Mayor": "scale.MajorScale", "Menor natural": "scale.MinorScale", "Menor armonica": "scale.HarmonicMinorScale"},
+  "solf": [" Piano y Voz", " Piano solo"]
 }

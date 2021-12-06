@@ -367,6 +367,55 @@ def notes(update, context):
     update.callback_query.edit_message_text(text="\U0001f916 <strong>" + nt + "</strong>",
                                             reply_markup=reply_markup, parse_mode=telegram.ParseMode.HTML)
 
+def solf(update, context):
+    update.callback_query.answer()
+    c = context.user_data
+    c[0] = update.callback_query["data"]
+    keyboard = base_key(two=True)
+    k2 = []
+    for i in get_lst(c[0] + "/", True):
+        k2.append(InlineKeyboardButton(i, callback_data="s" + str(i)))
+        disp.add_handler(telegram.ext.CallbackQueryHandler(pattern="s" + str(i), callback=solf_lst))
+    keyboard = slice_lst(k2, keyboard, 1)
+    reply_markup = InlineKeyboardMarkup(keyboard)
+    update.callback_query.edit_message_text(text="\U0001f916 <strong>De que libro?....</strong>",
+                                            reply_markup=reply_markup, parse_mode=telegram.ParseMode.HTML)
+
+def solf_lst(update, context):
+    update.callback_query.answer()
+    c = context.user_data
+    c[1] = update.callback_query["data"][1:]
+    keyboard = base_key("Atras", "solf", two=False)
+    k2 = []
+    for i in get_lst(c[0] + "/" + c[1] + "/", True):
+        k2.append(InlineKeyboardButton(i, callback_data="d" + str(i)))
+        disp.add_handler(telegram.ext.CallbackQueryHandler(pattern="d" + str(i), callback=snd_solf))
+    keyboard = slice_lst(k2, keyboard, 1)
+    reply_markup = InlineKeyboardMarkup(keyboard)
+    update.callback_query.edit_message_text(text="\U0001f916 <strong>Tengo estas lecciones para ofrecerte:...</strong>",
+                                            reply_markup=reply_markup, parse_mode=telegram.ParseMode.HTML)
+
+def snd_solf(update, context):
+    update.callback_query.answer()
+    c = context.user_data
+    c[2] = update.callback_query["data"][1:]
+    print(c)
+    update.callback_query.edit_message_text(text="\U0001f916 <strong>As2d2 procesando...</strong>",
+                                            parse_mode=telegram.ParseMode.HTML)
+
+    cap = u"\U0001F3B6 Solfeo " + c[1] + " " + c[2]
+    for i, j in zip(get_lst(c[0] + "/" + c[1] + "/" + c[2] + "/", False), datos["solf"]):
+        with open(c[0] + "/" + c[1] + "/" + c[2] + "/" + i, "rb") as audio_file:
+            context.bot.send_voice(chat_id=update.callback_query["message"]["chat"]["id"], voice=audio_file,
+                                   caption=cap + j)
+
+    keyboard = base_key("Atras", "s" + c[1], two=False)
+    reply_markup = InlineKeyboardMarkup(keyboard)
+    context.bot.sendMessage(chat_id=update.callback_query["message"]["chat"]["id"],
+                            text="\U0001f916 <strong>Hecho!!, Como seguimos...?</strong>",
+                            reply_markup=reply_markup, parse_mode=telegram.ParseMode.HTML)
+
+
 
 def start_over(update, context):
     update.callback_query.answer()
@@ -394,6 +443,10 @@ def handle_message(update, context):
     update.message.reply_text(f"\U0001f916 <strong>Dijiste {update.message.text} y no te entiendo.....</strong>\n"
                               "Todavia no se conversar pero tengo muchos botones!!\n"
                               "para inciar escribí /start", parse_mode=telegram.ParseMode.HTML)
+
+
+
+
 
 
 disp.add_handler(telegram.ext.CommandHandler("start", start))
