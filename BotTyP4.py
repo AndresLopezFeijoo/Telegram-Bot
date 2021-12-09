@@ -12,7 +12,7 @@ logging.basicConfig(filename="log.txt", format='%(asctime)s - %(name)s - %(level
                     level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-TOKEN = json.load(open("token.json"))["testtok"]
+TOKEN = json.load(open("token.json"))["tok"]
 devid = json.load(open("token.json"))["chatid"]
 updater = telegram.ext.Updater(TOKEN, use_context=True)
 disp = updater.dispatcher
@@ -382,7 +382,6 @@ def snd_solf(update, context):
     c = context.user_data
     c[2] = update.callback_query["data"][1:]
     logging.info("Enviando solfeo -- " + c[0] + "/" + c[1] + "/" + c[2])
-    print(c)
     update.callback_query.edit_message_text(text="\U0001f916 <strong>As2d2 procesando...</strong>",
                                             parse_mode=telegram.ParseMode.HTML)
 

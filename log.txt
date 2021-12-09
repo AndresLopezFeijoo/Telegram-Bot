@@ -1,0 +1,7 @@
+2021-12-09 17:00:13,084 - apscheduler.scheduler - INFO - Scheduler started
+2021-12-09 17:00:24,996 - root - INFO - Sending Dict/Lect -- dict/m/Audioperceptiva/3
+2021-12-09 17:01:50,840 - root - INFO - Sending Dict/Lect -- dict/r/Audioperceptiva/C
+2021-12-09 17:02:38,229 - root - INFO - Enviando solfeo -- dict/Suffern/3
+2021-12-09 17:02:38,625 - root - ERROR - [Errno 2] No such file or directory: 'dict/Suffern/3/'
+2021-12-09 17:04:34,417 - telegram.ext.updater - INFO - Received signal 2 (SIGINT), stopping...
+2021-12-09 17:04:34,418 - apscheduler.scheduler - INFO - Scheduler has been shut down
