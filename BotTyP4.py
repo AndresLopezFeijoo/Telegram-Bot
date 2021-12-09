@@ -6,8 +6,14 @@ from Tools import slice_lst, get_lst, base_key, send_mail
 from SeqClass import Sequence, nice_name
 import os
 import random
+import logging
 
-TOKEN = json.load(open("token.json"))["tok"]
+logging.basicConfig(filename="log.txt", format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+                    level=logging.INFO)
+logger = logging.getLogger(__name__)
+
+TOKEN = json.load(open("token.json"))["testtok"]
+devid = json.load(open("token.json"))["chatid"]
 updater = telegram.ext.Updater(TOKEN, use_context=True)
 disp = updater.dispatcher
 datos = json.load(open("datos.json"))
@@ -18,7 +24,6 @@ def mel_rit(update, context):
     update.callback_query.answer()
     c = context.user_data
     c[0] = update.callback_query["data"]
-    print(c)
     keyboard = base_key(two=True)
     k2 = []
     for i, j in zip(datos[c[0]][0], datos[c[0]][1]):
@@ -36,7 +41,6 @@ def años(update, context):
     update.callback_query.answer()
     c = context.user_data
     c[1] = update.callback_query["data"]
-    print(c)
     keyboard = base_key("Atras", c[0], two=False)
     k2 = []
     for i in datos["years"]:
@@ -52,7 +56,6 @@ def dic_lec_lst(update, context):
     update.callback_query.answer()
     c = context.user_data
     c[2] = update.callback_query["data"][1:]
-    print(c)
     a = get_lst(c[0] + "/" + c[1] + "/" + c[2], clear=True, nr=False)
     b = len(a) > 0
     keyboard = base_key("Atras", c[1], two=False)
@@ -72,13 +75,11 @@ def dic_lec_lst(update, context):
                                                 reply_markup=reply_markup, parse_mode=telegram.ParseMode.HTML)
 
 
-
-
 def send_dic_lec(update, context):
     update.callback_query.answer()
     c = context.user_data
     c[3] = update.callback_query["data"][1:]
-    print(c)
+    logging.info("Sending Dict/Lect -- " + c[0] + "/" + c[1] + "/" + c[2] + "/" + c[3])
     path = c[0] + "/" + c[1] + "/" + c[2] + "/" + c[3]
     update.callback_query.edit_message_text(text="\U0001f916 <strong>Ahí va!! </strong>",
                                             parse_mode=telegram.ParseMode.HTML)
@@ -118,12 +119,12 @@ def send_dic_lec(update, context):
         context.bot.sendMessage(chat_id=update.callback_query["message"]["chat"]["id"],
                                 text="\U0001f916 <strong>Elegí una opción</strong>",
                                 reply_markup=reply_markup, parse_mode=telegram.ParseMode.HTML)
-
+    else:
+        return error(update,context)
 
 def send_sol(update, context):
     update.callback_query.answer()
     c = context.user_data
-    print(c)
     path = c[1] + "/" + c[2] + "/" + c[3]
     update.callback_query.edit_message_text(text="\U0001f916 <strong>A ver.........</strong>",
                                             parse_mode=telegram.ParseMode.HTML)
@@ -140,7 +141,6 @@ def send_sol(update, context):
 def send_tyc(update, context):
     update.callback_query.answer()
     c = context.user_data
-    print(c)
     keyboard = [[InlineKeyboardButton("volver a dictados", callback_data="dict")],
                 [InlineKeyboardButton("Solución", callback_data="sol")]]
     reply_markup = InlineKeyboardMarkup(keyboard, remove_keyboard=True)
@@ -152,7 +152,6 @@ def chapters(update, context):
     update.callback_query.answer()
     c = context.user_data
     c[0] = update.callback_query["data"]
-    print(c)
     keyboard = base_key(two=True)
     k2 = []
     for i in datos[c[0]]:
@@ -168,7 +167,6 @@ def melo_hind_list(update, context):
     update.callback_query.answer()
     c = context.user_data
     c[1] = update.callback_query["data"][1:]
-    print(c)
     keyboard = base_key("Atras", c[0], two=False)
     k2 = []
     try:
@@ -187,7 +185,7 @@ def send_melo_hind(update, context):
     update.callback_query.answer()
     c = context.user_data
     c[2] = update.callback_query["data"][1:]
-    print(c)
+    logging.info("Sending Melo/Hind -- " + c[0] + "/" + c[1] + "/" + c[2])
     update.callback_query.edit_message_text(text="\U0001f916 <strong>As2d2 procesando...</strong>",
                                             parse_mode=telegram.ParseMode.HTML)
     if c[0] == "melo":
@@ -210,7 +208,6 @@ def books(update, context):
     update.callback_query.answer()
     c = context.user_data
     c[0] = update.callback_query["data"]
-    print(c)
     keyboard = base_key(two=True)
     k2 = []
     for i in get_lst(c[0], clear=True, nr=False):
@@ -227,7 +224,7 @@ def send_pdf(update, context):
     update.callback_query.answer()
     c = context.user_data
     c[1] = update.callback_query["data"][1:]
-    print(c)
+    logging.info("Sending .pdf file -- " + c[1])
     update.callback_query.edit_message_text(text="\U0001f916 <strong>Esperame que lo tengo que buscar...\n"
                                                  "Mi casa es un lio de papeles</strong>",
                                             parse_mode=telegram.ParseMode.HTML)
@@ -324,6 +321,7 @@ def snd_scl(update, context):
 def snd_seq(update, context):
     update.callback_query.answer()
     c = context.user_data
+    logging.info("Enviando secuencia -- " + c[1] + "/" + c[2] + "/" + c[3])
     context.bot.sendMessage(chat_id=update.callback_query["message"]["chat"]["id"],
                             text="\U0001f916 <strong>Elegí estos sonidos para vos....\n"
                                  "Cuando sepas que notas son pedime la solución </strong>", parse_mode=telegram.ParseMode.HTML)
@@ -383,6 +381,7 @@ def snd_solf(update, context):
     update.callback_query.answer()
     c = context.user_data
     c[2] = update.callback_query["data"][1:]
+    logging.info("Enviando solfeo -- " + c[0] + "/" + c[1] + "/" + c[2])
     print(c)
     update.callback_query.edit_message_text(text="\U0001f916 <strong>As2d2 procesando...</strong>",
                                             parse_mode=telegram.ParseMode.HTML)
@@ -401,17 +400,17 @@ def snd_solf(update, context):
 
 
 def rep(update, context):
+    logging.info("Reporting")
     update.callback_query.answer()
     c = context.user_data
     c[0] = update.callback_query["data"]
-    print(c)
     keyboard = base_key(two=True)
     reply_markup = InlineKeyboardMarkup(keyboard)
     update.callback_query.edit_message_text(text="\U0001f916 <strong>Escribime un mensaje con tu reporte.</strong>\n"
                                                  "Podes reportar si no estoy funcionando bien, o si encontraste "
                                                  "algun error en los materiales que envío.\nTambién podes escribirme a:"
                                                  "\n astorito.bot@gmail.com",
-                                                reply_markup=reply_markup, parse_mode=telegram.ParseMode.HTML)
+                                                 reply_markup=reply_markup, parse_mode=telegram.ParseMode.HTML)
 
 
 def start(update, context):
@@ -433,6 +432,7 @@ def start(update, context):
 
 def start_over(update, context):
     update.callback_query.answer()
+    context.user_data[0] = "start"
     k = [InlineKeyboardButton(text="Programa", url="https://cmbsas-caba.infd.edu.ar/sitio/nivel-medio/")]
     k2 = []
     for i in json.load(open("datos.json"))["start"]:
@@ -456,21 +456,28 @@ def end(update, context):
 def handle_message(update, context):
     if context.user_data[0] == "rep":
         send_mail(update.message["text"])
-        update.message.reply_text(f"\U0001f916 <strong>Listo!!\nTu reporte fue enviado.\nGracias!!\n/start"
+        update.message.reply_text("\U0001f916 <strong>Listo!!\nTu reporte fue enviado.\nGracias!!\n"
+                                  f"Algo mas? 👉 /start"
                                   f"</strong>", parse_mode=telegram.ParseMode.HTML)
+        context.user_data[0] = "-"
     else:
         update.message.reply_text(f"\U0001f916 <strong>Dijiste {update.message.text} y no te entiendo.....</strong>\n"
                               "Todavia no se conversar pero tengo muchos botones!!\n"
                               "para inciar escribí /start", parse_mode=telegram.ParseMode.HTML)
 
 
-
-
+def error(update, context):
+    logging.error(str(context.error))
+    context.bot.sendMessage(chat_id=devid, text="Hubo un error " + str(context.error))
+    context.bot.sendMessage(chat_id=update.effective_chat.id,
+                            text="<strong>🤖 Que papelón!!,\nalgo salió mal..... \n"
+                                 f"Seguí por acá 👉 /start </strong>", parse_mode=telegram.ParseMode.HTML)
 
 
 disp.add_handler(telegram.ext.CommandHandler("start", start))
 disp.add_handler(telegram.ext.MessageHandler(telegram.ext.Filters.text, handle_message))
 disp.add_handler(telegram.ext.CallbackQueryHandler(pattern="home", callback=start_over))
+disp.add_error_handler(error)
 
 updater.start_polling()  # drop_pending_updates=True
 updater.idle()
