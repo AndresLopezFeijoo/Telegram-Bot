@@ -2,7 +2,7 @@ import telegram.ext
 import json
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import ConversationHandler
-from Tools import slice_lst, get_lst, base_key
+from Tools import slice_lst, get_lst, base_key, send_mail
 from SeqClass import Sequence, nice_name
 import os
 import random
@@ -53,7 +53,7 @@ def dic_lec_lst(update, context):
     c = context.user_data
     c[2] = update.callback_query["data"][1:]
     print(c)
-    a = get_lst(c[0] + "/" + c[1] + "/" + c[2], clear=True)
+    a = get_lst(c[0] + "/" + c[1] + "/" + c[2], clear=True, nr=False)
     b = len(a) > 0
     keyboard = base_key("Atras", c[1], two=False)
     k2 = []
@@ -89,7 +89,7 @@ def send_dic_lec(update, context):
         elif c[1] == "r":
             nro = u"\U0001F941 " + c[2] + " / " + c[3] + u" \U0001F449"
             cp = "captionr"
-        for i, j in zip(get_lst(path, clear=False), datos[cp]):
+        for i, j in zip(get_lst(path, clear=False, nr=False), datos[cp]):
             with open(path + "/" + i, "rb") as audio_file:
                 context.bot.send_voice(chat_id=update.callback_query["message"]["chat"]["id"], voice=audio_file,
                                        caption=nro + j)
@@ -172,7 +172,7 @@ def melo_hind_list(update, context):
     keyboard = base_key("Atras", c[0], two=False)
     k2 = []
     try:
-        for i in get_lst(c[0] + "/" + c[1], clear=True):
+        for i in get_lst(c[0] + "/" + c[1], clear=True, nr=False):
             k2.append(InlineKeyboardButton(i, callback_data=">" + i))
             disp.add_handler(telegram.ext.CallbackQueryHandler(pattern=(">" + i), callback=send_melo_hind))
         keyboard = slice_lst(k2, keyboard, 3)
@@ -213,7 +213,7 @@ def books(update, context):
     print(c)
     keyboard = base_key(two=True)
     k2 = []
-    for i in get_lst(c[0], clear=True):
+    for i in get_lst(c[0], clear=True, nr=False):
         k2.append(InlineKeyboardButton(i, callback_data="b" + i))
         disp.add_handler(telegram.ext.CallbackQueryHandler(pattern=("b" + i), callback=send_pdf))
 
@@ -253,22 +253,6 @@ def working(update, context):
     context.bot.sendMessage(chat_id=update.callback_query["message"]["chat"]["id"],
                             text=u"\U0001f916 <strong> Que hacemos? </strong>",
                             parse_mode=telegram.ParseMode.HTML, reply_markup=reply_markup)
-
-
-def start(update, context):
-    first_name = update.message.from_user.first_name
-    msg = u"\U0001f916 <strong>Hola {}!! soy Astorito, el droide de Astor.</strong>\U0001FA97\n" \
-          "Puedo ofrecerte las siguientes opciones, mucha suerte!!\U0001F3B6".format(first_name)
-    k = [InlineKeyboardButton(text="Programa", url="https://cmbsas-caba.infd.edu.ar/sitio/nivel-medio/")]
-    k2 = []
-    for i in json.load(open("datos.json"))["start"]:
-        k.append(InlineKeyboardButton(i[0], callback_data=i[1]))
-        disp.add_handler(telegram.ext.CallbackQueryHandler(pattern=i[1], callback=eval(i[2])))
-    for i in range(0, len(k), 2):
-        k2.append(k[i:i + 2])
-    reply_markup = InlineKeyboardMarkup(k2)
-    context.bot.sendMessage(chat_id=update.message.chat_id, text=msg, reply_markup=reply_markup,
-                            parse_mode=telegram.ParseMode.HTML)
 
 
 def root(update, context):
@@ -373,7 +357,7 @@ def solf(update, context):
     c[0] = update.callback_query["data"]
     keyboard = base_key(two=True)
     k2 = []
-    for i in get_lst(c[0] + "/", True):
+    for i in get_lst(c[0] + "/", True, False):
         k2.append(InlineKeyboardButton(i, callback_data="s" + str(i)))
         disp.add_handler(telegram.ext.CallbackQueryHandler(pattern="s" + str(i), callback=solf_lst))
     keyboard = slice_lst(k2, keyboard, 1)
@@ -387,7 +371,7 @@ def solf_lst(update, context):
     c[1] = update.callback_query["data"][1:]
     keyboard = base_key("Atras", "solf", two=False)
     k2 = []
-    for i in get_lst(c[0] + "/" + c[1] + "/", True):
+    for i in get_lst(c[0] + "/" + c[1] + "/", True, True):
         k2.append(InlineKeyboardButton(i, callback_data="d" + str(i)))
         disp.add_handler(telegram.ext.CallbackQueryHandler(pattern="d" + str(i), callback=snd_solf))
     keyboard = slice_lst(k2, keyboard, 1)
@@ -404,7 +388,7 @@ def snd_solf(update, context):
                                             parse_mode=telegram.ParseMode.HTML)
 
     cap = u"\U0001F3B6 Solfeo " + c[1] + " " + c[2]
-    for i, j in zip(get_lst(c[0] + "/" + c[1] + "/" + c[2] + "/", False), datos["solf"]):
+    for i, j in zip(get_lst(c[0] + "/" + c[1] + "/" + c[2] + "/", False, False), datos["solf"]):
         with open(c[0] + "/" + c[1] + "/" + c[2] + "/" + i, "rb") as audio_file:
             context.bot.send_voice(chat_id=update.callback_query["message"]["chat"]["id"], voice=audio_file,
                                    caption=cap + j)
@@ -415,6 +399,36 @@ def snd_solf(update, context):
                             text="\U0001f916 <strong>Hecho!!, Como seguimos...?</strong>",
                             reply_markup=reply_markup, parse_mode=telegram.ParseMode.HTML)
 
+
+def rep(update, context):
+    update.callback_query.answer()
+    c = context.user_data
+    c[0] = update.callback_query["data"]
+    print(c)
+    keyboard = base_key(two=True)
+    reply_markup = InlineKeyboardMarkup(keyboard)
+    update.callback_query.edit_message_text(text="\U0001f916 <strong>Escribime un mensaje con tu reporte.</strong>\n"
+                                                 "Podes reportar si no estoy funcionando bien, o si encontraste "
+                                                 "algun error en los materiales que envío.\nTambién podes escribirme a:"
+                                                 "\n astorito.bot@gmail.com",
+                                                reply_markup=reply_markup, parse_mode=telegram.ParseMode.HTML)
+
+
+def start(update, context):
+    first_name = update.message.from_user.first_name
+    context.user_data[0] = "start"
+    msg = u"\U0001f916 <strong>Hola {}!! soy Astorito, el droide de Astor.</strong>\U0001FA97\n" \
+          "Puedo ofrecerte las siguientes opciones, mucha suerte!!\U0001F3B6".format(first_name)
+    k = [InlineKeyboardButton(text="Programa", url="https://cmbsas-caba.infd.edu.ar/sitio/nivel-medio/")]
+    k2 = []
+    for i in json.load(open("datos.json"))["start"]:
+        k.append(InlineKeyboardButton(i[0], callback_data=i[1]))
+        disp.add_handler(telegram.ext.CallbackQueryHandler(pattern=i[1], callback=eval(i[2])))
+    for i in range(0, len(k), 2):
+        k2.append(k[i:i + 2])
+    reply_markup = InlineKeyboardMarkup(k2)
+    context.bot.sendMessage(chat_id=update.message.chat_id, text=msg, reply_markup=reply_markup,
+                            parse_mode=telegram.ParseMode.HTML)
 
 
 def start_over(update, context):
@@ -440,7 +454,12 @@ def end(update, context):
 
 
 def handle_message(update, context):
-    update.message.reply_text(f"\U0001f916 <strong>Dijiste {update.message.text} y no te entiendo.....</strong>\n"
+    if context.user_data[0] == "rep":
+        send_mail(update.message["text"])
+        update.message.reply_text(f"\U0001f916 <strong>Listo!!\nTu reporte fue enviado.\nGracias!!\n/start"
+                                  f"</strong>", parse_mode=telegram.ParseMode.HTML)
+    else:
+        update.message.reply_text(f"\U0001f916 <strong>Dijiste {update.message.text} y no te entiendo.....</strong>\n"
                               "Todavia no se conversar pero tengo muchos botones!!\n"
                               "para inciar escribí /start", parse_mode=telegram.ParseMode.HTML)
 

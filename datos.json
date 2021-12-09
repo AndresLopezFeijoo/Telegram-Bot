@@ -16,7 +16,8 @@
 
   "start": [["Dictados", "dict", "mel_rit"], ["Hindemith", "hind", "chapters"], ["Melo Castillo", "melo", "chapters"],
             ["Lecturas", "lect", "mel_rit"], ["Solfeos", "solf", "solf"], ["Teoria", "teoria", "working"],
-            ["Bibliografia", "bib", "books"], ["Secuencias", "seq", "root"], ["Terminar", "end", "end"]],
+            ["Bibliografia", "bib", "books"], ["Secuencias", "seq", "root"], ["Reportá", "rep", "rep"],
+            ["Terminar", "end", "end"]],
 
   "root": ["Dob", "Reb", "Mib", "Fab", "Solb", "Lab", "Sib", "Do", "Re", "Mi", "Fa", "Sol", "La", "Si",
             "Do#", "Re#", "Mi#", "Fa#", "Sol#", "La#", "Si#"],

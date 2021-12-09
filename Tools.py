@@ -1,5 +1,25 @@
 import os
 from telegram import InlineKeyboardButton
+import smtplib, ssl
+from email.message import EmailMessage
+import json
+
+password = json.load(open("token.json"))["gmail"]
+
+
+def send_mail(mens):
+    port = 465
+
+    context = ssl.create_default_context()
+
+    with smtplib.SMTP_SSL("smtp.gmail.com", port, context=context) as server:
+        server.login("astorito.bot@gmail.com", password)
+        msg = EmailMessage()
+        msg.set_content(mens)
+        msg['Subject'] = 'Reporte'
+        msg['From'] = "astorito.bot@gmail.com"
+        msg['To'] = "astorito.bot@gmail.com"
+        server.send_message(msg)
 
 
 def slice_lst(lst, lst2, step):
@@ -8,9 +28,11 @@ def slice_lst(lst, lst2, step):
     return lst2
 
 
-def get_lst(path, clear: bool):
+def get_lst(path, clear: bool, nr: bool):
     if clear:
         lst = [i.split(".")[0] for i in os.listdir(path) if not i.startswith('.')]
+        if nr:
+            lst = [int(i.split(".")[0]) for i in os.listdir(path) if not i.startswith('.')]
     else:
         lst = [i for i in os.listdir(path) if not i.startswith('.')]
 
