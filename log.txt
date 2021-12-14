@@ -219,3 +219,4 @@ AttributeError: 'NoneType' object has no attribute 'effective_chat'
 2021-12-13 22:08:18,384 - root - ERROR - Message is not modified: specified new message content and reply markup are exactly the same as a current content and reply markup of the message
 2021-12-13 22:22:09,481 - telegram.ext.updater - INFO - Received signal 2 (SIGINT), stopping...
 2021-12-13 22:22:09,797 - apscheduler.scheduler - INFO - Scheduler has been shut down
+lalallallalaalalal
