@@ -219,6 +219,7 @@ AttributeError: 'NoneType' object has no attribute 'effective_chat'
 2021-12-13 22:08:18,384 - root - ERROR - Message is not modified: specified new message content and reply markup are exactly the same as a current content and reply markup of the message
 2021-12-13 22:22:09,481 - telegram.ext.updater - INFO - Received signal 2 (SIGINT), stopping...
 2021-12-13 22:22:09,797 - apscheduler.scheduler - INFO - Scheduler has been shut down
+<<<<<<< HEAD
 2021-12-13 22:28:32,583 - apscheduler.scheduler - INFO - Scheduler started
 2021-12-13 22:32:44,636 - root - INFO - Reporting
 2021-12-13 22:32:49,916 - root - ERROR - Message is not modified: specified new message content and reply markup are exactly the same as a current content and reply markup of the message
@@ -228,3 +229,6 @@ AttributeError: 'NoneType' object has no attribute 'effective_chat'
 2021-12-13 22:32:59,113 - root - INFO - Reporting
 2021-12-13 22:44:38,129 - telegram.ext.updater - INFO - Received signal 2 (SIGINT), stopping...
 2021-12-13 22:44:38,131 - apscheduler.scheduler - INFO - Scheduler has been shut down
+=======
+lalallallalaalalal
+>>>>>>> 442c65832a2be22be183f3dba24ddfbf2dcd019f
