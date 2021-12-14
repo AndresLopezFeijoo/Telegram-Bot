@@ -397,7 +397,6 @@ def snd_solf(update, context):
                             text="\U0001f916 <strong>Hecho!!, Como seguimos...?</strong>",
                             reply_markup=reply_markup, parse_mode=telegram.ParseMode.HTML)
 
-
 def rep(update, context):
     logging.info("Reporting")
     update.callback_query.answer()
@@ -467,10 +466,12 @@ def handle_message(update, context):
 
 def error(update, context):
     logging.error(str(context.error))
-    context.bot.sendMessage(chat_id=devid, text="Hubo un error " + str(context.error))
-    context.bot.sendMessage(chat_id=update.effective_chat.id,
-                            text="<strong>🤖 Que papelón!!,\nalgo salió mal..... \n"
-                                 f"Seguí por acá 👉 /start </strong>", parse_mode=telegram.ParseMode.HTML)
+    if str(context.error) != "Message is not modified: specified new message content and reply markup are exactly" \
+                             " the same as a current content and reply markup of the message":
+        context.bot.sendMessage(chat_id=devid, text="Hubo un error " + str(context.error))
+        context.bot.sendMessage(chat_id=update.effective_chat.id,
+                                text="<strong>🤖 Que papelón!!,\nalgo salió mal..... \n"
+                                f"Seguí por acá 👉 /start </strong>", parse_mode=telegram.ParseMode.HTML)
 
 
 disp.add_handler(telegram.ext.CommandHandler("start", start))
