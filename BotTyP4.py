@@ -120,7 +120,7 @@ def send_dic_lec(update, context):
                                 text="\U0001f916 <strong>Elegí una opción</strong>",
                                 reply_markup=reply_markup, parse_mode=telegram.ParseMode.HTML)
     else:
-        return error(update,context)
+        return error_no_file(update,context)
 
 def send_sol(update, context):
     update.callback_query.answer()
@@ -462,6 +462,17 @@ def handle_message(update, context):
         update.message.reply_text(f"\U0001f916 <strong>Dijiste {update.message.text} y no te entiendo.....</strong>\n"
                               "Todavia no se conversar pero tengo muchos botones!!\n"
                               "para inciar escribí /start", parse_mode=telegram.ParseMode.HTML)
+
+
+def error_no_file(update, context):
+    update.callback_query.answer()
+    logging.error(str(context.error))
+    context.bot.sendMessage(chat_id=devid, text="Hubo un error " + str(context.error))
+    keyboard = base_key("Volver a dictados", "mel_rit", two=False)
+    reply_markup = InlineKeyboardMarkup(keyboard)
+    update.callback_query.edit_message_text(text="\U0001f916 <strong>No tengo materiales en esa categoría....\n"
+                                                 "Que haceomos?</strong>",
+                                            reply_markup=reply_markup, parse_mode=telegram.ParseMode.HTML)
 
 
 def error(update, context):
