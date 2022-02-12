@@ -1,9 +1,9 @@
-from SeqClass import Sequence, nice_name
+from RSeqClass import *
 from Tools import get_lst
 from datetime import datetime
 
 
-def get_seq_bank(n, ext, bool):
+def get_rseq_bank(n, ext, bool):
     for i in get_lst("secuencias/melodicas", True, False):
         for j in get_lst("secuencias/melodicas/" + i, True, False):
             for k in get_lst("secuencias/melodicas/" + i + "/" + j, True, False):
