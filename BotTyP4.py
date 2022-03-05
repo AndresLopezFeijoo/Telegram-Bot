@@ -486,7 +486,6 @@ def end(update, context):
 
 
 def handle_message(update, context):
-    print(context.user_data)
     if context.user_data[0] == "rep":
         context.bot.send_chat_action(chat_id=update.message.chat_id, action="typing")
         send_mail(update.message["text"])
