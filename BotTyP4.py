@@ -497,7 +497,7 @@ def handle_message(update, context):
     else:
         update.message.reply_text(f"\U0001f916 <strong>Dijiste {update.message.text} y no te entiendo.....</strong>\n"
                                   "Todavia no se conversar pero tengo muchos botones!!\n"
-                                  "para inciar apretá 👉 /star", parse_mode=telegram.ParseMode.HTML)
+                                  "para inciar apretá 👉 /start", parse_mode=telegram.ParseMode.HTML)
 
 
 def error_no_file(update, context):
