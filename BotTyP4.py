@@ -65,7 +65,7 @@ def dic_lec_lst(update, context):
         reply_markup = InlineKeyboardMarkup(keyboard)
         update.callback_query.edit_message_text(text="\U0001f916<strong>" + datos[c[0]][2] + "</strong>",
                                                 reply_markup=reply_markup, parse_mode=telegram.ParseMode.HTML)
-    except FileNotFoundError:
+    except: # FileNotFoundError
         return error_no_file(update, context)
 
 
