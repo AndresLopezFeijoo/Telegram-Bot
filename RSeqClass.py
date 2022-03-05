@@ -288,27 +288,4 @@ class Rsequence:
         os.remove(path + "/" + self.name + ".mid")
 
 
-    def no(self):
-        s = stream.Stream()
-        tpo = tempo.MetronomeMark("slow")
-        s.append(tpo)
-        s.append(self.tkey)
-        s.append(self.pulse_voice())
-        s.write("midi", path + "/pulso.mid")
-        fs2 = FluidSynth(sound_font="/Users/andreslopezfeijoo/PycharmProjects/Telegram-Bot/sound fonts/VMStab_JJ.sf2")
-        fs2.midi_to_audio(path + "/pulso.mid", path + "/pulso.wav")
-        os.remove(path + "/pulso.mid")
-
-        s1 = AudioSegment.from_file(path + "/" + self.name + ".wav")
-        s2 = AudioSegment.from_file(path + "/pulso.wav")
-        combined = s1.overlay(s2)
-        os.remove(path + "/" + self.name + ".wav")
-        os.remove(path + "/pulso.wav")
-        combined.export(path + "/" + self.name + ".flac", format='flac')
-
-#s = Rsequence(1, "Binario", 4)
-#s.sequence.show()
-#s.get_seq_audio("secuencias")
-#s.get_image("secuencias")
-
 
