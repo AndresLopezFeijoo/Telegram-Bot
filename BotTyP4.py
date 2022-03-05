@@ -4,15 +4,14 @@ from telegram import InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import ConversationHandler
 from Tools import slice_lst, get_lst, base_key, send_mail
 from SeqClass import Sequence, nice_name
-import os
 import random
 import logging
 
-#logging.basicConfig(filename="log.txt", format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-                    #level=logging.INFO)
-#logger = logging.getLogger(__name__)
+logging.basicConfig(filename="log.txt", format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+                    level=logging.INFO)
+logger = logging.getLogger(__name__)
 
-TOKEN = json.load(open("token.json"))["testtok"]
+TOKEN = json.load(open("token.json"))["tok"]
 devid = json.load(open("token.json"))["chatid"]
 updater = telegram.ext.Updater(TOKEN, use_context=True)
 disp = updater.dispatcher
@@ -77,11 +76,11 @@ def send_dic_lec(update, context):
     c[3] = update.callback_query["data"][1:]
     logging.info("Sending Dict/Lect -- " + c[0] + "/" + c[1] + "/" + c[2] + "/" + c[3])
     path = c[0] + "/" + c[1] + "/" + c[2] + "/" + c[3]
-    update.callback_query.edit_message_text(text="\U0001f916 <strong>Esperá.. te voy a mandar 5 audios\n"
-                                                 "Ahí van..!! </strong>",
-                                            parse_mode=telegram.ParseMode.HTML)
 
     if c[0] == "dict":
+        update.callback_query.edit_message_text(text="\U0001f916 <strong>Esperá.. te voy a mandar 5 audios\n"
+                                                     "Ahí van..!! </strong>",
+                                                parse_mode=telegram.ParseMode.HTML)
         if c[1] == "m":
             nro = u"\U0001F3BC " + c[2] + " / " + c[3] + u" \U0001F449"
             cp = "captionm"
@@ -106,6 +105,8 @@ def send_dic_lec(update, context):
                                 text="\U0001f916 <strong>Elegí una opción</strong>",
                                 reply_markup=reply_markup, parse_mode=telegram.ParseMode.HTML)
     elif c[0] == "lect":
+        update.callback_query.edit_message_text(text="\U0001f916 <strong>As2d2 working.... </strong>",
+                                                parse_mode=telegram.ParseMode.HTML)
         if c[1] == "m":
             msg = u'\U0001F440 \U0001F3BC' + " Nro: " + c[3]
         elif c[1] == "r":
@@ -266,7 +267,6 @@ def seq2(update, context):
     update.callback_query.answer()
     c = context.user_data
     c[1] = update.callback_query["data"][1:]
-    print(c)
     keyboard = base_key("Atras", c[0], two=False)
     k2 = []
     for i in get_lst(c[0] + "/" + c[1], True, False):
@@ -284,7 +284,6 @@ def seq3(update, context):
     update.callback_query.answer()
     c = context.user_data
     c[2] = update.callback_query["data"][1:]
-    print(c)
     keyboard = base_key("Atras", "q" + c[1], two=False)
     k2 = []
     for i in get_lst(c[0] + "/" + c[1] + "/" + c[2], True, False):
@@ -304,7 +303,6 @@ def seq4(update, context):
     update.callback_query.answer()
     c = context.user_data
     c[3] = update.callback_query["data"][1:]
-    print(c)
     keyboard = base_key("Atras", "e" + c[2], two=False)
     k2 = []
     for i in get_lst(c[0] + "/" + c[1] + "/" + c[2] + "/" + c[3], True, False):
@@ -344,18 +342,16 @@ def snd_scale_or_pulse(update, context):
 def snd_seq(update, context):
     update.callback_query.answer()
     c = context.user_data
-    print(c)
     logging.info("Enviando secuencia -- " + c[1] + "/" + c[2] + "/" + c[3] + "/" + c[4])
     context.bot.sendMessage(chat_id=update.callback_query["message"]["chat"]["id"],
                             text="\U0001f916 <strong>Elegí estos sonidos para vos....\n"
                                  "Cuando lo tengas pedime la solución </strong>",
                             parse_mode=telegram.ParseMode.HTML)
     file = random.choice(get_lst("secuencias/" + c[1] + "/" + c[2] + "/" + c[3] + "/" + c[4], True, False))
-    print(file)
     with open("secuencias/" + c[1] + "/" + c[2] + "/" + c[3] + "/" + c[4] + "/" + file + ".flac", "rb") as audio_file:
         context.bot.send_chat_action(chat_id=update.callback_query["message"]["chat"]["id"], action="upload_audio")
         context.bot.send_voice(chat_id=update.callback_query["message"]["chat"]["id"], voice=audio_file,
-                               caption="Secuencia " + c[1] + ", " + c[2] + ", " + c[3])
+                               caption="Secuencia, " + c[1] + ", " + c[2] + ", " + c[3])
     keyboard = base_key("Solución", "y" + file, two=False)
     disp.add_handler(telegram.ext.CallbackQueryHandler(pattern="y" + file, callback=seq_sol))
     reply_markup = InlineKeyboardMarkup(keyboard)
@@ -368,13 +364,12 @@ def seq_sol(update, context):
     update.callback_query.answer()
     c = context.user_data
     c[5] = update.callback_query["data"][1:].split(".")[0]
-    print(c)
     update.callback_query.edit_message_text(text="\U0001f916 <strong>A ver ????....</strong>",
                                             parse_mode=telegram.ParseMode.HTML)
 
     with open("secuencias/" + c[1] + "/" + c[2] + "/" + c[3] + "/" + c[4] + "/" + c[5] + ".png", "rb") as png_file:
         context.bot.send_photo(chat_id=update.callback_query["message"]["chat"]["id"], photo=png_file,
-                               caption="Secuencia de " + c[4] + " pulsos en pie " + c[2])
+                               caption="Secuencia de " + c[4] + " pulsos en " + c[2])
 
     keyboard = base_key("Otro!!", "ñ", two=False)
     disp.add_handler(telegram.ext.CallbackQueryHandler(pattern="ñ", callback=snd_seq))
@@ -502,15 +497,14 @@ def handle_message(update, context):
     else:
         update.message.reply_text(f"\U0001f916 <strong>Dijiste {update.message.text} y no te entiendo.....</strong>\n"
                                   "Todavia no se conversar pero tengo muchos botones!!\n"
-                                  "para inciar escribí /start", parse_mode=telegram.ParseMode.HTML)
+                                  "para inciar apretá 👉 /star", parse_mode=telegram.ParseMode.HTML)
 
 
 def error_no_file(update, context):
     update.callback_query.answer()
     c = context.user_data
-    print(c)
-    logging.error(str(context.error))
-    context.bot.sendMessage(chat_id=devid, text="Hubo un error " + str(context.error))
+    logging.error("No habia materiales en " + str(c))
+    #context.bot.sendMessage(chat_id=devid, text="No habia materiales en " + str(c))
     if c[0] == "start":
         keyboard = base_key("Volver", c[0], two=True)
     else:
