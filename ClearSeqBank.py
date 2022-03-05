@@ -4,21 +4,21 @@ from datetime import datetime
 
 
 def clear_seq_bank(type):
-    for i in get_lst("secuencias", True):
-        for j in get_lst("secuencias/" + i, True):
-            for k in get_lst("secuencias/" + i + "/" + j, True):
-                for m in get_lst("secuencias/" + i + "/" + j + "/" + k, False):
-                    if type == "All":
-                        os.remove(os.path.join("secuencias/" + i + "/" + j + "/" + k, m))
-                    elif m.endswith(type):
-                        print("Borrando: " + m)
-                        os.remove(os.path.join("secuencias/" + i + "/" + j + "/" + k, m))
+    for i in get_lst("secuencias", True, False):
+        for j in get_lst("secuencias/" + i, True, False):
+            for k in get_lst("secuencias/" + i + "/" + j, True, False):
+                for m in get_lst("secuencias/" + i + "/" + j + "/" + k, False, False):
+                    for n in get_lst("secuencias/" + i + "/" + j + "/" + k + "/" + m, False, False):
+                        if type == "all":
+                            os.remove(os.path.join("secuencias/" + i + "/" + j + "/" + k + "/" + m + "/" + n))
+                        elif m.endswith(type):
+                            print("Borrando: " + m)
+                            os.remove(os.path.join("secuencias/" + i + "/" + j + "/" + k + "/" + m + "/" + n))
 
 
 
-
-a = input("Queres borrar el banco de secuencias. y/n")
-b = input("Que tipo de archivo? .mid/.flac/All")
+a = input("Queres borrar el banco de secuencias melodicas?. y/n")
+b = input("Que tipo de archivo? .mid/.flac/all")
 if a == "y":
     start_time = datetime.now()
     clear_seq_bank(b)

@@ -15,8 +15,8 @@
   "captionr": [" completo", " Comapases 1 y 2", " Compases 3 y 4", " Compases 5 y 6", " Compases 7 y 8"],
 
   "start": [["Dictados", "dict", "mel_rit"], ["Hindemith", "hind", "chapters"], ["Melo Castillo", "melo", "chapters"],
-            ["Lecturas", "lect", "mel_rit"], ["Solfeos", "solf", "solf"], ["Teoria", "teoria", "working"],
-            ["Bibliografia", "bib", "books"], ["Secuencias", "seq", "root"], ["Reportá", "rep", "rep"],
+            ["Lecturas", "lect", "mel_rit"], ["Solfeos", "solf", "solf"], ["Teoria", "teoria", "error_no_file"],
+            ["Bibliografia", "bib", "books"], ["Secuencias", "secuencias", "sequence"], ["Reportá", "rep", "rep"],
             ["Terminar", "end", "end"]],
 
   "root": ["Dob", "Reb", "Mib", "Fab", "Solb", "Lab", "Sib", "Do", "Re", "Mi", "Fa", "Sol", "La", "Si",

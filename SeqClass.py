@@ -1,4 +1,4 @@
-from music21 import note, scale, stream, pitch
+from music21 import *
 from midi2audio import FluidSynth
 import os
 import random
@@ -26,12 +26,28 @@ class Sequence:
     def __init__(self, k, m, n, fund=bool):
         self.key = k #Key
         self.m = eval(modes[m]) #Mode
+        self.key_sign = self.get_key() # Armadura de clave
         self.n = n #Number of notes in sequence
+        self.tkey = meter.TimeSignature(str(n) + "/" + str(4))
         self.fund = eval(fund)
         self.scale_names = [str(i) for i in self.m(self.key).getPitches(self.key + "4", self.key + "5")]
         self.scale_pitches = [i for i in self.m(self.key).getPitches(self.key + "4", self.key + "5")]
         self.seq_names = self.fundamental()
         self.seq_pitches = [pitch.Pitch(i) for i in self.seq_names]
+
+    def get_key(self):
+        modes = {"<class 'music21.scale.MinorScale'>": [0, "minor"],
+                 "<class 'music21.scale.HarmonicMinorScale'>": [0, "minor"],
+                 "<class 'music21.scale.MajorScale'>": [1, "major"]}
+        roots = {"Cb": "c-", "Db": "d-", "Eb": "e-", "Fb": "f-", "Gb": "g-", "Ab": "a-", "Bb": "b-", "C": "c", "D": "d",
+                 "E": "e", "F": "f", "G": "g", "A": "a", "B": "b", "C#": "c#", "D#": "d#", "E#": "e#", "F#": "f#",
+                 "G#": "g#", "A#": "a#", "B#": "b#"}
+        fund = roots[self.key]
+        mode = modes[str(self.m)][1]
+        if modes[str(self.m)][1] == "major":
+            fund = fund.upper()
+        k = key.Key(fund, mode)
+        return k
 
     def fundamental(self):
         if self.fund:
@@ -50,7 +66,7 @@ class Sequence:
         os.remove("escala.mid")
         return s
 
-    def get_seq_audio_bank(self, path, name, ext):
+    def get_seq_audio_bank(self, path, name, ext): # Path, Name, Ext midi o audio
         print(path + "--" + name)
         st = stream.Stream()
         for i in self.seq_names:
@@ -72,6 +88,15 @@ class Sequence:
         os.remove("seq.mid")
         return s
 
+    def get_image(self, path):
+        st = stream.Stream()
+        st.append(self.tkey)
+        st.append(self.key_sign)
+        for i in self.seq_pitches:
+            st.append(note.Note(i))
+        st.write("musicxml.png", fp=path + "/" + nice_name(self.seq_pitches) + ".png")
+        os.remove(path + "/" + nice_name(self.seq_pitches) + ".musicxml")
+        os.rename(path + "/" + nice_name(self.seq_pitches) + "-1.png", path + "/" + nice_name(self.seq_pitches) + ".png")
 
 
 

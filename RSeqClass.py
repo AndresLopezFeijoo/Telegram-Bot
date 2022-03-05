@@ -2,22 +2,10 @@ from music21 import *
 import random as rd
 from midi2audio import FluidSynth
 import os
+from pydub import AudioSegment
 
-figures = {0: note.Note("f5", quarterLength=3), 1: note.Rest("f5", quarterLength=3),
-           2: note.Note("f5", quarterLength=2), 3: note.Rest("f5", quarterLength=2),
-           4: note.Note("f5", quarterLength=1.5), 5: note.Rest("f5", quarterLength=1.5),
-           6: note.Note("f5", quarterLength=1), 7: note.Rest("f5", quarterLength=1),
-           8: note.Note("f5", quarterLength=0.75), 9: note.Rest("f5", quarterLength=0.75),
-           10: note.Note("f5", quarterLength=0.5), 11: note.Rest("f5", quarterLength=0.5),
-           12: note.Note("f5", quarterLength=0.33), 13: note.Note("f5", quarterLength=0.2),
-           14: note.Note("f5", quarterLength=0.375), 15: note.Rest("f5", quarterLength=0.375),
-           16: note.Note("f5", quarterLength=0.25), 17: note.Rest("f5", quarterLength=0.25),
-           18: note.Note("f5", quarterLength=0.142), 19: note.Rest("f5", quarterLength=0.33),
-           20: note.Rest("f5", quarterLength=0.2), 21: note.Rest("f5", quarterLength=0.142),
-           22: note.Note("f5", quarterLength=0.125), 23: note.Rest("f5", quarterLength=0.125)}
-
-# A partir de la 24 son con fusas
-cells = {"binario": {0: [0], 1: [6], 2: [7], 3: [10, 10], 4: [11, 10], 5: [10, 11], 6: [16, 16, 10], 7: [10, 16, 16],
+# A partir de la 24 son con fusas, A patir del 186 tresillos con silencios y semis, del 201 son quintillos con silencio
+cells = {"Binario": {0: [0], 1: [6], 2: [7], 3: [10, 10], 4: [11, 10], 5: [10, 11], 6: [16, 16, 10], 7: [10, 16, 16],
                8: [16, 16, 11], 9: [11, 16, 16], 10: [17, 16, 10], 11: [10, 17, 16], 12: [16, 10, 16],
                13: [16, 11, 16], 14: [8, 16], 15: [16, 8], 16: [17, 8], 17: [12, 12, 12], 18: [10, 6, 10],
                19: [11, 6, 10],
@@ -72,15 +60,40 @@ cells = {"binario": {0: [0], 1: [6], 2: [7], 3: [10, 10], 4: [11, 10], 5: [10, 1
                177: (23, 16, 22, 22, 22, 22, 22), 178: (23, 22, 22, 22, 16, 22, 22), 179: (23, 22, 22, 22, 22, 16, 22),
                180: (23, 22, 22, 22, 22, 22, 16), 181: (22, 22, 22, 22, 22, 22, 22, 22),
                182: (22, 22, 22, 22, 22, 22, 23, 22), 183: (22, 22, 22, 22, 23, 22, 22, 22),
-               184: (22, 22, 23, 22, 22, 22, 22, 22), 185: (23, 22, 22, 22, 22, 22, 22, 22), 186: [6]},
-         "ternario": {1: [1.5], 2: [0.5, 0.5, 0.5], 3: [1, 0.5], 4: [0.25, 0.25, 0.5, 0.5]}}
+               184: (22, 22, 23, 22, 22, 22, 22, 22), 185: (23, 22, 22, 22, 22, 22, 22, 22), 186: (12, 12),
+               187: (19, 12), 188: (12, 12, 12), 189: (12, 12, 19), 190: (12, 19, 12), 191: (24, 24, 12, 12),
+               192: (19, 12, 12), 193: (12, 12, 24, 24), 194: (12, 24, 24, 12), 195: (12, 24, 24, 19),
+               196: (19, 12, 24, 24), 197: (19, 24, 24, 12), 198: (12, 24, 24, 24, 24), 199: (19, 24, 24, 24, 24),
+               200: (24, 24, 24, 24, 24, 24), 201: (13, 13, 13, 13, 13), 202: (20, 13, 13, 13, 13),
+               203: (13, 20, 13, 13, 13), 204: (13, 13, 20, 13, 13), 205: (13, 13, 13, 20, 13),
+               206: (13, 13, 13, 13, 20)},
+         "Ternario": {0: (6, 10), 1: (6, 11), 2: (7, 10), 3: (10, 6), 4: (10, 7), 5: (11, 6), 6: (6, 16, 16),
+                      7: (6, 17, 16), 8: (7, 16, 16), 9: (10, 10, 10), 10: (10, 10, 11), 11: (10, 11, 10),
+                      12: (11, 10, 10), 13: (16, 6, 16), 14: (16, 16, 6), 15: (16, 16, 7), 16: (17, 16, 6),
+                      17: (10, 10, 16, 16), 18: (10, 11, 16, 16), 19: (10, 16, 10, 16), 20: (10, 16, 16, 10),
+                      21: (10, 16, 16, 11), 22: (10, 17, 10, 16), 23: (10, 17, 16, 10), 24: (11, 10, 16, 16),
+                      25: (11, 16, 10, 16), 26: (11, 16, 16, 10), 27: (16, 10, 10, 16), 28: (16, 10, 16, 10),
+                      29: (16, 16, 10, 10), 30: (16, 16, 10, 11), 31: (16, 16, 11, 10), 32: (17, 10, 10, 16),
+                      33: (17, 16, 10, 10), 34: (10, 16, 16, 16, 16), 35: (10, 17, 16, 16, 16),
+                      36: (11, 16, 16, 16, 16), 37: (16, 10, 16, 16, 16), 38: (16, 16, 10, 16, 16),
+                      39: (16, 16, 11, 16, 16), 40: (16, 16, 16, 10, 16), 41: (16, 16, 16, 16, 10),
+                      42: (16, 16, 16, 16, 11), 43: (16, 16, 17, 10, 16), 44: (16, 16, 17, 16, 10),
+                      45: (17, 10, 16, 16, 16), 46: (17, 16, 10, 16, 16), 47: (17, 16, 16, 10, 16),
+                      48: (17, 16, 16, 16, 10), 49: (16, 16, 16, 16, 16, 16), 50: (17, 16, 16, 16, 16, 16),
+                      51: (10, 10, 22, 22, 22, 22), 52: (10, 10, 23, 22, 22, 22), 53: (10, 11, 22, 22, 22, 22), # A partir del 52 con semis
+                      54: (10, 22, 10, 22, 22, 22), 55: (10, 22, 22, 10, 22, 22), 56: (10, 22, 22, 10, 22, 23),
+                      57: (10, 22, 22, 11, 22, 22), 58: (10, 22, 22, 22, 10, 22), 59: (10, 22, 22, 22, 22, 10),
+                      60: (10, 22, 22, 22, 22, 11), 61: (10, 22, 22, 22, 23, 10), 62: (10, 23, 10, 22, 22, 22),
+                      63: (10, 23, 22, 10, 22, 22), 64: (10, 23, 22, 22, 10, 22), 65: (10, 23, 22, 22, 22, 10),
+                      66: (11, 10, 22, 22, 22, 22), 67: (11, 22, 10, 22, 22, 22), 68: (11, 22, 22, 10, 22, 22),
+                      69: (11, 22, 22, 22, 10, 22), 70: (11, 22, 22, 22, 22, 10), 71: (22, 22, 10, 10, 22, 22),
+                      72: (22, 22, 10, 22, 22, 10), 73: (22, 22, 10, 22, 22, 11), 74: (22, 22, 22, 10, 10, 22),
+                      75: (22, 22, 22, 10, 11, 22), 76: (22, 22, 22, 10, 22, 10), 77: (22, 22, 22, 22, 10, 10),
+                      78: (22, 22, 22, 22, 10, 11), 79: (22, 22, 22, 22, 11, 10), 80: (22, 22, 22, 23, 10, 10),
+                      81: (23, 22, 10, 10, 22, 22), 82: (23, 22, 10, 22, 10, 22), 83: (23, 22, 22, 22, 10, 10),
+                      84: (25, 25, 25, 25), 85: (27, 27, 27, 27, 27), 86: (29, 29, 29, 29, 29, 29, 29)}}  # A partir del 84 cuatrillo quintillo y septisillo
 
-lvl_num = {"binario": {0: [0, 23], 1: [24, 185], 2: [186]}, "ternario": {0: [], 1: [], 2: []}}
 
-names = {"quarter": "Negra", "eighth": "Corchea", "16th": "Semi", "half": "Blanca", "32nd": "Fusa",
-         "Silencio de quarter": "Silencio de Negra", "Silencio de eighth": "Silencio de corchea",
-         "Silencio de 16th": "Silencio de Semi", "Silencio de half": "Silencio de Blanca",
-         "Silencio de 32nd": "Silencio de Fusa"}
 
 
 
@@ -93,139 +106,209 @@ class Rsequence:
         self.num = self.get_num  # numerador
         self.tkey = meter.TimeSignature(self.get_num() + "/" + self.get_den())  # indicacion de compas
         self.clef = clef.PercussionClef()  # clave de percusion
+        self.quarterlength = self.get_quarterlength()
+        self.length = 0
+        self.cell_lst = self.cell_list_lvl()
         self.sequence = self.create_seq()
+        self.name = self.get_name()
+
+    def get_quarterlength(self):
+        if self.pie == "Binario":
+            return self.pulses
+        else:
+            return self.pulses * 1.5
 
     def get_num(self):
-        if self.pie == "binario":
-            return str(self.pulses)
+        if self.pie == "Binario":
+            if self.pulses == 6:
+                return str(round(self.pulses/2))
+            else:
+                return str(self.pulses)
         else:
             return str(self.pulses * 3)
 
     def get_den(self):
-        if self.pie == "binario":
+        if self.pie == "Binario":
             return "4"
         else:
             return "8"
 
+    def counter(self, *args):
+        values = {0: 3, 1: 3, 2: 2, 3: 2, 4: 1.5, 5: 1.5, 6: 1, 7: 1, 8: 3 / 4, 9: 3 / 4, 10: 1 / 2, 11: 1 / 2,
+                  12: 1 / 3,
+                  13: 1 / 5, 14: 3 / 8, 15: 3 / 8, 16: 1 / 4, 17: 1 / 4, 18: 1 / 7, 19: 1 / 3, 20: 1 / 5, 21: 1 / 7,
+                  22: 1 / 8, 23: 1 / 8,
+                  24: 1 / 6, 25: 1.5 / 4, 26: 1.5 / 4, 27: 1.5 / 5, 28: 1.5 / 5, 29: 1.5 / 7, 30: 1.5 / 7}
+        for i in cells[self.pie][args[0]]:
+            self.length += values[i]
+
+    def pulse_voice(self):
+        p = stream.Voice()
+        #tpo = tempo.MetronomeMark("slow")
+        #i = instrument.BassDrum()
+        #p.append(tpo)
+        #p.append(self.tkey)
+        #p.append(self.clef)
+        #p.staffLines = 1
+        #p.append(i)
+        for j in range(self.pulses):
+            n2 = note.Note("a4", quarterLength=self.quarterlength/self.pulses)
+            n2.stemDirection = "down"
+            p.repeatAppend(n2, 1)
+        return p
+
+
+    def get_note(self, n):
+        note_data = {0: [1, "half", 0, 1, 1, 3],  # Blanca con punto
+                     1: [0, "half", 1, 1, 1, 3],  # Silencio Blanca con punto
+                     2: [1, "half", 0, 1, 1, 2],  # Blanca
+                     3: [0, "half", 0, 1, 1, 2],  # Sil de Blanca
+                     4: [1, "quarter", 1, 1, 1, 1.5],  # Negra con punto
+                     5: [0, "quarter", 1, 1, 1, 1.5],  # Sil de negra con punto
+                     6: [1, "quarter", 0, 1, 1, 1],  # Negra
+                     7: [0, "quarter", 0, 1, 1, 1],  # Sil de Negra
+                     8: [1, "eighth", 1, 1, 1, 3 / 4],  # Corchea con punto
+                     9: [0, "eighth", 1, 1, 1, 3 / 4],  # Sil de Corchea con punto
+                     10: [1, "eighth", 0, 1, 1, 1 / 2],  # Corchea
+                     11: [0, "eighth", 0, 1, 1, 1 / 2],  # Sil de Corchea
+                     12: [1, "eighth", 0, 3, 2, 1 / 3],  # Corchea de Tresillo
+                     13: [1, "16th", 0, 5, 4, 1 / 5],  # Semi de Quintillo
+                     14: [1, "16th", 1, 1, 1, 3 / 8],  # Semi con punto
+                     15: [0, "16th", 1, 1, 1, 3 / 8],  # Sil de semi con punto
+                     16: [1, "16th", 0, 1, 1, 1 / 4],  # Semi
+                     17: [0, "16th", 0, 1, 1, 1 / 4],  # Sil de Semi
+                     18: [1, "16th", 0, 7, 4, 1 / 7],  # Semi de septisillo
+                     19: [0, "eighth", 0, 3, 2, 1 / 3],  # Sil de Corche de Tresillo
+                     20: [0, "16th", 0, 5, 4, 1 / 5],  # Sil de semi de quintillo
+                     21: [0, "16th", 0, 7, 4, 1 / 7],  # Sil de semi de septisillo
+                     22: [1, "32nd", 0, 1, 1, 1 / 8],  # Fusa
+                     23: [0, "32nd", 0, 1, 1, 1 / 8],  # Sil de Fusa
+                     24: [1, "16th", 0, 6, 4, 1 / 6],  # Semi de Seisillo
+                     25: [1, "eighth", 0, 4, 3, 1.5 / 4],  # Corchea de Cuatrillo CC
+                     26: [0, "eighth", 0, 4, 3, 1.5 / 4],  # Sil de Corche de Cuatrillo CC
+                     27: [1, "eighth", 0, 5, 3, 0],  # Corchea de Quintillo CC
+                     28: [0, "eighth", 0, 5, 3, 0],  # Sil de Corchea de Qintillo CC
+                     29: [1, "16th", 0, 7, 6, 0],  # Semi de Septisillo CC
+                     30: [0, "16th", 0, 7, 6, 0]}  # Sil de Semi de Septisillo CC
+        if note_data[n][0] == 0:
+            a = note.Rest()
+        if note_data[n][0] == 1:
+            a = note.Note("e5")
+        a.duration.type = note_data[n][1]
+        a.duration.dots = note_data[n][2]
+        t = duration.Tuplet(note_data[n][3], note_data[n][4])
+        a.duration.appendTuplet(t)
+        if self.pie == "binario":
+            a.quarterLength = note_data[n][5]
+        return a
+
 
     def cell_list_lvl(self):  # lista de celulas segun nivel
-        nr = self.pulses//2
-        lst = []
-        if self.level == 1:
-            while len(lst) < self.pulses:
-                lst.append(rd.randint(0, 23))
+        lvl_num = {"Binario": {1: [0, 23], 2: [24, 185], 3: [186, 206]},
+                   "Ternario": {1: [0, 50], 2: [51, 83], 3: [84, 86]}}
+        while round(self.length, 2) != self.quarterlength:
+            nota = False  # Indica si la secuencia empieza con una nota. False = empieza con silencio
+            while nota is False:
+                lst = []
+                self.length = 0
+                if self.level == 1:
+                    while round(self.length, 2) < self.quarterlength:
+                        n = rd.randint(lvl_num[self.pie][self.level][0], lvl_num[self.pie][self.level][1])
+                        lst.append(n)
+                        self.counter(n)
 
-        elif self.level == 2:
-            while len(lst) < self.pulses - nr:
-                lst.append(rd.randint(0, 23))
-            while len(lst) < self.pulses:
-                lst.append(rd.randint(24, 185))
+                elif self.level == 2:
+                    while round(self.length, 2) < self.quarterlength//2:
+                        n = rd.randint(lvl_num[self.pie][int(self.level) - 1][0], lvl_num[self.pie][int(self.level) - 1][1])
+                        lst.append(n)
+                        self.counter(n)
+                    while round(self.length, 2) < self.quarterlength:
+                        n = rd.randint(lvl_num[self.pie][self.level][0], lvl_num[self.pie][self.level][1])
+                        lst.append(n)
+                        self.counter(n)
 
-        elif self.level == 3:
-            while len(lst) < self.pulses - nr:
-                lst.append(rd.randint(0, 23))
-            while len(lst) < self.pulses - (nr//2):
-                lst.append(rd.randint(24, 184))
-            while len(lst) < self.pulses:
-                lst.append(rd.randint(186, 186))
+                elif self.level == 3:
+                    n = rd.randint(lvl_num[self.pie][self.level][0],
+                                   lvl_num[self.pie][self.level][1])
+                    lst.append(n)
+                    self.counter(n)
+                    o = rd.randint(lvl_num[self.pie][int(self.level) - 1][0],
+                                   lvl_num[self.pie][int(self.level) - 1][1])
+                    lst.append(o)
+                    self.counter(o)
+                    while self.length < self.quarterlength:
+                        n = rd.randint(lvl_num[self.pie][int(self.level) - 2][0],
+                                       lvl_num[self.pie][int(self.level) - 2][1])
+                        lst.append(n)
+                        self.counter(n)
+                rd.shuffle(lst)
+                if self.get_note(cells[self.pie][lst[0]][0]).isNote:
+                    nota = True
 
-        rd.shuffle(lst)
         return lst
+
 
     def create_seq(self):
         s = stream.Stream()
-        tpo = tempo.MetronomeMark(number=80)
+        t = stream.Voice()
+        i = instrument.SnareDrum()
+        tpo = tempo.MetronomeMark("slow")
         s.append(tpo)
         s.append(self.tkey)
         s.append(self.clef)
-        s.staffLines = 1
+        s.staffLines = 4
+        s.append(i)
 
-        while s.quarterLength < self.pulses:
-            for i in self.cell_list_lvl():
-                for j in cells[self.pie][i]:
-                    s.repeatAppend(figures[j], 1)
-                while s.quarterLength > self.pulses:
-                    s.pop(0)
+        for i in self.cell_lst:
+            for j in cells[self.pie][i]:
+                n = self.get_note(j)
+                n.stemDirection = "up"
+                t.repeatAppend(n, 1)
+
+        s.insert(t)
+        s.insert(self.pulse_voice())
 
         return s
 
+    def get_name(self):
+        n = ""
+        for i in self.cell_lst:
+            n += str(i) + ","
+        return n[:-1]
+
+    def get_image(self, path):
+        self.sequence.write("musicxml.png", fp=path + "/" + self.name + ".png")
+        os.remove(path + "/" + self.name + ".musicxml")
+        os.rename(path + "/" + self.name + "-1.png", path + "/" + self.name + ".png")
+
+    def get_seq_audio(self, path):
+        self.sequence.write("midi", path + "/" + self.name + ".mid")
+        fs = FluidSynth(sound_font="/Users/andreslopezfeijoo/PycharmProjects/Telegram-Bot/sound fonts/FluidR3_GM.sf2")
+        fs.midi_to_audio(path + "/" + self.name + ".mid", path + "/" + self.name + ".flac")
+        os.remove(path + "/" + self.name + ".mid")
 
 
+    def no(self):
+        s = stream.Stream()
+        tpo = tempo.MetronomeMark("slow")
+        s.append(tpo)
+        s.append(self.tkey)
+        s.append(self.pulse_voice())
+        s.write("midi", path + "/pulso.mid")
+        fs2 = FluidSynth(sound_font="/Users/andreslopezfeijoo/PycharmProjects/Telegram-Bot/sound fonts/VMStab_JJ.sf2")
+        fs2.midi_to_audio(path + "/pulso.mid", path + "/pulso.wav")
+        os.remove(path + "/pulso.mid")
+
+        s1 = AudioSegment.from_file(path + "/" + self.name + ".wav")
+        s2 = AudioSegment.from_file(path + "/pulso.wav")
+        combined = s1.overlay(s2)
+        os.remove(path + "/" + self.name + ".wav")
+        os.remove(path + "/pulso.wav")
+        combined.export(path + "/" + self.name + ".flac", format='flac')
+
+#s = Rsequence(1, "Binario", 4)
+#s.sequence.show()
+#s.get_seq_audio("secuencias")
+#s.get_image("secuencias")
 
 
-
-    #def __init__(self, nr, year, den):
-    #    self.number = nr
-    #    self.year = year
-    #    self.den = den
-    #    self.tkey = meter.TimeSignature(str(self.number) + "/" + self.den)
-    #    self.clef = clef.PercussionClef()
-    #    self.sequence = self.create_seq()
-    #    self.figures = self.figure_names()
-    #    self.spfigures = self.sp_names()
-
-    #def create_seq(self):
-    #    s = stream.Stream()
-    #    tpo = tempo.MetronomeMark(number=80)
-    #    s.append(tpo)
-    #    s.append(self.tkey)
-    #    s.append(self.clef)
-    #    s.staffLines = 1
-    #    while s.quarterLength < self.number:
-    #        if self.cheat != 0:
-    #            nr = self.cheat
-    #        else:
-    #            nr = rd.randint(1, 184)
-    #        if nr < 4:
-    #            s.repeatAppend(figures[nr], 1)
-    #        else:
-    #            for i in cells[str(self.tkey.ratioString)[-1]][nr]:
-    #                s.repeatAppend(figures[i], 1)
-    #        while s.quarterLength > self.number:
-    #            s.pop(0)
-     #   return s
-
-    #def figure_names(self):
-     #   nm = []
-      #  for i in list(self.sequence.elements[4:]):
-       #     if i.isRest:
-        #        nm.append("Silencio de " + i.duration.type + ", ")
-         #   else:
-          #      nm.append(i.duration.type + ", ")
-        #return nm
-
-    #def sp_names(self):
-     #   sp_names = ""
-      #  for i in self.figures:
-       #     sp_names += names[i[:-2]] + ", "
-        #return sp_names[:-2]
-
-    #def get_seq_audio(self, path, name, ext):
-     #   print(path + "--" + name)
-      #  self.sequence.write("midi", path + "/" + name + ".mid")
-       # if ext == "audio":
-        #    fs = FluidSynth()
-         #   fs.midi_to_audio(path + "/" + name + ".mid", path + "/" + name + ".flac")
-          #  os.remove(path + "/" + name + ".mid")
-
-    #def export(self, path, *args):  # Args = nombre del archivo para los png
-        # self.create_seq().write('musicxml', fp=path + "/" + str(self.spfigures) + ".xml")
-        # self.create_seq().write("musicxml.pdf", fp=path + "/" + str(self.spfigures) + ".pdf")
-     #   self.sequence.write("musicxml.png", fp=path + "/" + str(args) + ".png")
-
-
-
-r = Rsequence(2, "binario", 3)
-r.sequence.show()
-#0, 1, 2a = Rsequence(4, "I", "4", 0)
-#a.sequence.show()
-# print(a.cheat)
-# a.export("secuencias/ritmicas")
-# a.sequence.write("musicxml.png", fp="secuencias/ritmicas/ap.png")
-# for i in cells2["4"]:
-#    a = Rcheatsequence(1, "I", "4", i)
-#    #a.sequence.show()
-#    #print(a.figures)
-#    #print(a.spfigures)
-#    a.export("secuencias/ritmicas/a")
-#    a.get_seq_audio("secuencias/ritmicas/b", a.sp_names(), "audio")

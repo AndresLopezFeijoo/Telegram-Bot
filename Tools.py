@@ -9,9 +9,7 @@ password = json.load(open("token.json"))["gmail"]
 
 def send_mail(mens):
     port = 465
-
     context = ssl.create_default_context()
-
     with smtplib.SMTP_SSL("smtp.gmail.com", port, context=context) as server:
         server.login("astorito.bot@gmail.com", password)
         msg = EmailMessage()
@@ -28,7 +26,7 @@ def slice_lst(lst, lst2, step):
     return lst2
 
 
-def get_lst(path, clear: bool, nr: bool):
+def get_lst(path, clear: bool, nr: bool):  # Clear quita las extensiones, nr devuelce ints
     if clear:
         lst = [i.split(".")[0] for i in os.listdir(path) if not i.startswith('.')]
         if nr:
@@ -48,4 +46,3 @@ def base_key(*args, two: bool):
                     [InlineKeyboardButton("Home", callback_data="home"),
                      InlineKeyboardButton("Terminar", callback_data="end")]]
     return keyboard
-
