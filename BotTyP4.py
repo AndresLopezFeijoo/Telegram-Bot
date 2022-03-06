@@ -7,9 +7,9 @@ from SeqClass import Sequence, nice_name
 import random
 import logging
 
-logging.basicConfig(filename="log.txt", format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-                    level=logging.INFO)
-logger = logging.getLogger(__name__)
+#logging.basicConfig(filename="log.txt", format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+#                    level=logging.INFO)
+#logger = logging.getLogger(__name__)
 
 TOKEN = json.load(open("token.json"))["tok"]
 devid = json.load(open("token.json"))["chatid"]
@@ -262,8 +262,8 @@ def sequence(update, context):
 
 
 def seq2(update, context):
-    msg = {'Melódicas': "\U0001f916 <strong> Elegí una fundamental....... </strong>",
-           'Rítmicas': "\U0001f916 <strong> Pie binario o ternario?....... </strong>"}
+    msg = {'M': "\U0001f916 <strong> Elegí una fundamental....... </strong>",
+           'R': "\U0001f916 <strong> Pie binario o ternario?....... </strong>"}
     update.callback_query.answer()
     c = context.user_data
     c[1] = update.callback_query["data"][1:]
@@ -275,12 +275,12 @@ def seq2(update, context):
     keyboard = slice_lst(k2, keyboard, 7)
     reply_markup = InlineKeyboardMarkup(keyboard)
     update.callback_query.edit_message_text(
-        text=msg[c[1]], reply_markup=reply_markup, parse_mode=telegram.ParseMode.HTML)
+        text=msg[c[1][0]], reply_markup=reply_markup, parse_mode=telegram.ParseMode.HTML)
 
 
 def seq3(update, context):
-    msg = {'Melódicas': "\U0001f916 <strong>Eligí un modo.....</strong>",
-           'Rítmicas': "\U0001f916 <strong> Que nivel de dificultad?....... </strong>"}
+    msg = {'M': "\U0001f916 <strong>Eligí un modo.....</strong>",
+           'R': "\U0001f916 <strong> Que nivel de dificultad?....... </strong>"}
     update.callback_query.answer()
     c = context.user_data
     c[2] = update.callback_query["data"][1:]
@@ -292,14 +292,14 @@ def seq3(update, context):
     keyboard = slice_lst(k2, keyboard, 2)
     reply_markup = InlineKeyboardMarkup(keyboard)
     update.callback_query.edit_message_text(
-        text=msg[c[1]], reply_markup=reply_markup, parse_mode=telegram.ParseMode.HTML)
+        text=msg[c[1][0]], reply_markup=reply_markup, parse_mode=telegram.ParseMode.HTML)
 
 
 def seq4(update, context):
-    msg = {'Melódicas': ["\U0001f916 <strong>Cuantas notas te mando?\n3, 4 y 5 son secuencias que comienzan siempre "
+    msg = {'M': ["\U0001f916 <strong>Cuantas notas te mando?\n3, 4 y 5 son secuencias que comienzan siempre "
                           "en la tónica.\n"
                           "Hard son seis notas y puede empezar por cualquier sonido!!!</strong>", "snd_scl", "x"],
-           'Rítmicas': ["\U0001f916 <strong> Cuantos pulsos?....... </strong>", "snd_pulse", "y"]}
+           'R': ["\U0001f916 <strong> Cuantos pulsos?....... </strong>", "snd_pulse", "y"]}
     update.callback_query.answer()
     c = context.user_data
     c[3] = update.callback_query["data"][1:]
@@ -311,7 +311,7 @@ def seq4(update, context):
     keyboard = slice_lst(k2, keyboard, 7)
     reply_markup = InlineKeyboardMarkup(keyboard)
     update.callback_query.edit_message_text(
-        text=msg[c[1]][0],
+        text=msg[c[1][0]][0],
         reply_markup=reply_markup, parse_mode=telegram.ParseMode.HTML)
 
 
@@ -319,7 +319,7 @@ def snd_scale_or_pulse(update, context):
     update.callback_query.answer()
     c = context.user_data
     c[4] = update.callback_query["data"][1:]
-    if c[1] == 'Melódicas':
+    if c[1][0] == "M":
         seq = Sequence(c[2], c[3], int(c[4]), "True")
         update.callback_query.edit_message_text(text="\U0001f916 <strong>Primero te mando la escala!! </strong>",
                                                 parse_mode=telegram.ParseMode.HTML)
@@ -527,7 +527,7 @@ def error(update, context): # Para cuando usan botoneras viejas y se marea el di
 disp.add_handler(telegram.ext.CommandHandler("start", start))
 disp.add_handler(telegram.ext.MessageHandler(telegram.ext.Filters.text, handle_message))
 disp.add_handler(telegram.ext.CallbackQueryHandler(pattern="home", callback=start_over))
-disp.add_error_handler(error)
+#disp.add_error_handler(error)
 
 updater.start_polling(drop_pending_updates=True)
 updater.idle()
