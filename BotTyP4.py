@@ -7,9 +7,9 @@ from SeqClass import Sequence, nice_name
 import random
 import logging
 
-#logging.basicConfig(filename="log.txt", format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-#                    level=logging.INFO)
-#logger = logging.getLogger(__name__)
+logging.basicConfig(filename="log.txt", format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+                    level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 TOKEN = json.load(open("token.json"))["tok"]
 devid = json.load(open("token.json"))["chatid"]
@@ -58,9 +58,9 @@ def dic_lec_lst(update, context):
     keyboard = base_key("Atras", c[1], two=False)
     k2 = []
     try:
-        for i in get_lst(c[0] + "/" + c[1] + "/" + c[2], clear=True, nr=False):
-            k2.append(InlineKeyboardButton(i, callback_data="o" + i))
-            disp.add_handler(telegram.ext.CallbackQueryHandler(pattern="o" + i, callback=send_dic_lec))
+        for i in get_lst(c[0] + "/" + c[1] + "/" + c[2], clear=True, nr=True):
+            k2.append(InlineKeyboardButton(str(i), callback_data="o" + str(i)))
+            disp.add_handler(telegram.ext.CallbackQueryHandler(pattern="o" + str(i), callback=send_dic_lec))
         keyboard = slice_lst(k2, keyboard, 4)
         reply_markup = InlineKeyboardMarkup(keyboard)
         update.callback_query.edit_message_text(text="\U0001f916<strong>" + datos[c[0]][2] + "</strong>",
@@ -527,7 +527,7 @@ def error(update, context): # Para cuando usan botoneras viejas y se marea el di
 disp.add_handler(telegram.ext.CommandHandler("start", start))
 disp.add_handler(telegram.ext.MessageHandler(telegram.ext.Filters.text, handle_message))
 disp.add_handler(telegram.ext.CallbackQueryHandler(pattern="home", callback=start_over))
-#disp.add_error_handler(error)
+disp.add_error_handler(error)
 
-updater.start_polling(drop_pending_updates=True)
+updater.start_polling(drop_pending_updates=True, timeout=500)
 updater.idle()
