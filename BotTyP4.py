@@ -57,8 +57,9 @@ def dic_lec_lst(update, context):
     c[2] = update.callback_query["data"][1:]
     keyboard = base_key("Atras", c[1], two=False)
     k2 = []
+    d = {"m": True, "r": False}
     try:
-        for i in get_lst(c[0] + "/" + c[1] + "/" + c[2], clear=True, nr=True):
+        for i in get_lst(c[0] + "/" + c[1] + "/" + c[2], clear=True, nr=d[c[1]]):
             k2.append(InlineKeyboardButton(str(i), callback_data="o" + str(i)))
             disp.add_handler(telegram.ext.CallbackQueryHandler(pattern="o" + str(i), callback=send_dic_lec))
         keyboard = slice_lst(k2, keyboard, 4)
