@@ -93,7 +93,7 @@ def send_dic_lec(update, context):
             context.bot.send_chat_action(chat_id=update.callback_query["message"]["chat"]["id"], action="upload_audio")
             with open(path + "/" + i, "rb") as audio_file:
                 context.bot.send_voice(chat_id=update.callback_query["message"]["chat"]["id"], voice=audio_file,
-                                       caption=nro + j)
+                                       caption=nro + j, timeout=20)
 
         keyboard = [[InlineKeyboardButton("Volver a dictados", callback_data="dict")],
                     [InlineKeyboardButton("Tonalidad y/o compás", callback_data="tyc")],
@@ -202,7 +202,7 @@ def send_melo_hind(update, context):
     with open(c[0] + "/" + c[1] + "/" + c[2] + ".mp3", "rb") as audio_file:
         context.bot.send_chat_action(chat_id=update.callback_query["message"]["chat"]["id"], action="upload_audio")
         context.bot.send_voice(chat_id=update.callback_query["message"]["chat"]["id"], voice=audio_file,
-                               caption=cap)
+                               caption=cap, timeout=20)
 
     keyboard = base_key("Atras", "<" + c[1], two=False)
     reply_markup = InlineKeyboardMarkup(keyboard)
@@ -238,7 +238,7 @@ def send_pdf(update, context):
     with open(c[0] + "/" + c[1] + ".pdf", "rb") as pdf_file:
         context.bot.send_chat_action(chat_id=update.callback_query["message"]["chat"]["id"], action="upload_document")
         context.bot.send_document(chat_id=update.callback_query["message"]["chat"]["id"], document=pdf_file,
-                                  caption=u'📖 🤓 ' + c[1])
+                                  caption=u'📖 🤓 ' + c[1], timeout=20)
     keyboard = base_key("Atras", c[0], two=False)
     reply_markup = InlineKeyboardMarkup(keyboard)
     context.bot.sendMessage(chat_id=update.callback_query["message"]["chat"]["id"],
@@ -352,7 +352,7 @@ def snd_seq(update, context):
     with open("secuencias/" + c[1] + "/" + c[2] + "/" + c[3] + "/" + c[4] + "/" + file + ".flac", "rb") as audio_file:
         context.bot.send_chat_action(chat_id=update.callback_query["message"]["chat"]["id"], action="upload_audio")
         context.bot.send_voice(chat_id=update.callback_query["message"]["chat"]["id"], voice=audio_file,
-                               caption="Secuencia, " + c[1] + ", " + c[2] + ", " + c[3])
+                               caption="Secuencia, " + c[1] + ", " + c[2] + ", " + c[3], timeout=20)
     keyboard = base_key("Solución", "y" + file, two=False)
     disp.add_handler(telegram.ext.CallbackQueryHandler(pattern="y" + file, callback=seq_sol))
     reply_markup = InlineKeyboardMarkup(keyboard)
@@ -422,7 +422,7 @@ def snd_solf(update, context):
         context.bot.send_chat_action(chat_id=update.callback_query["message"]["chat"]["id"], action="upload_document")
         with open(c[0] + "/" + c[1] + "/" + c[2] + "/" + i, "rb") as audio_file:
             context.bot.send_voice(chat_id=update.callback_query["message"]["chat"]["id"], voice=audio_file,
-                                   caption=cap + j)
+                                   caption=cap + j, timeout=30)
 
     keyboard = base_key("Atras", "s" + c[1], two=False)
     reply_markup = InlineKeyboardMarkup(keyboard)
@@ -530,5 +530,5 @@ disp.add_handler(telegram.ext.MessageHandler(telegram.ext.Filters.text, handle_m
 disp.add_handler(telegram.ext.CallbackQueryHandler(pattern="home", callback=start_over))
 disp.add_error_handler(error)
 
-updater.start_polling(drop_pending_updates=True, timeout=500)
+updater.start_polling(drop_pending_updates=True, timeout=15)
 updater.idle()
