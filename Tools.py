@@ -4,7 +4,7 @@ import smtplib, ssl
 from email.message import EmailMessage
 import json
 
-password = json.load(open("token.json"))["gmail"]
+password = json.load(open("token.json"))["gmail2"]
 
 
 def send_mail(mens):
