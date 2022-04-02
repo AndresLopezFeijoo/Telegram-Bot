@@ -464,6 +464,8 @@ def start(update, context):
 
 def start_over(update, context):
     update.callback_query.answer()
+    context.bot.sendMessage(chat_id=update.callback_query["message"]["chat"]["id"], text="🤖",
+                            parse_mode=telegram.ParseMode.HTML)
     context.user_data[0] = "start"
     k = [InlineKeyboardButton(text="Programa", url="https://cmbsas-caba.infd.edu.ar/sitio/nivel-medio/")]
     k2 = []
@@ -473,9 +475,10 @@ def start_over(update, context):
     for i in range(0, len(k), 2):
         k2.append(k[i:i + 2])
     reply_markup = InlineKeyboardMarkup(k2)
-    update.callback_query.edit_message_text(text="🤖 <strong>Empecemos otra vez!!</strong>\n"
-                                                 "Contame que queres hacer.",
-                                            reply_markup=reply_markup, parse_mode=telegram.ParseMode.HTML)
+    context.bot.sendMessage(chat_id=update.callback_query["message"]["chat"]["id"],
+                            text="<strong>Empecemos otra vez!!</strong>\n"
+                                 "Contame que queres hacer.",
+                            reply_markup=reply_markup, parse_mode=telegram.ParseMode.HTML)
 
 
 def end(update, context):
