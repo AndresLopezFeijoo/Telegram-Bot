@@ -3,7 +3,6 @@ import json
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import ConversationHandler
 from Tools import slice_lst, get_lst, base_key, send_mail
-from SeqClass import Sequence, nice_name
 import random
 import logging
 
@@ -11,7 +10,7 @@ logging.basicConfig(filename="log.txt", format='%(asctime)s - %(name)s - %(level
                     level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-TOKEN = json.load(open("token.json"))["tok"]
+TOKEN = json.load(open("token.json"))["testtok"]
 devid = json.load(open("token.json"))["chatid"]
 updater = telegram.ext.Updater(TOKEN, use_context=True)
 disp = updater.dispatcher
@@ -321,13 +320,13 @@ def snd_scale_or_pulse(update, context):
     c = context.user_data
     c[4] = update.callback_query["data"][1:]
     if c[1][0] == "M":
-        seq = Sequence(c[2], c[3], int(c[4]), "True")
         update.callback_query.edit_message_text(text="\U0001f916 <strong>Primero te mando la escala!! </strong>",
                                                 parse_mode=telegram.ParseMode.HTML)
         with open("escalas/" + c[3] + "/" + c[2] + ".mp3", "rb") as audio_file:
             context.bot.send_voice(chat_id=update.callback_query["message"]["chat"]["id"], voice=audio_file,
                                    caption="<strong>" + c[2] + " " + c[3] + ":</strong>" + " " +
-                                   nice_name(seq.scale_pitches), parse_mode=telegram.ParseMode.HTML)
+                                   str(json.load(open("scale_note_names.json"))[c[3]][c[2]])[2:-2],
+                                   parse_mode=telegram.ParseMode.HTML)
         return snd_seq(update, context)
     else:
         update.callback_query.edit_message_text(text="\U0001f916 <strong>Primero te mando el pulso!! </strong>",
