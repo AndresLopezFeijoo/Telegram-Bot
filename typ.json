@@ -27,7 +27,11 @@
      "10": "Do Mayor y en 6/8"
    },
    "III": {
-     "10": "Do Mayor y en 3/4"
+     "1": "Mi menor y en 4/4",
+     "2": "Re menor y en 4/4",
+     "3": "Sol menor y en 3/4",
+     "4": "Do Mayor y en 6/8",
+     "5": "Fa menor y en 4/4"
    },
    "IV": {
      "1": "La menor y en 6/8"
