@@ -3,8 +3,10 @@ import json
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import ConversationHandler
 from Tools import slice_lst, get_lst, base_key, send_mail
+from stats import new_json_data, plot_data
 import random
 import logging
+import os
 
 logging.basicConfig(filename="log.txt", format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
                     level=logging.INFO)
@@ -82,9 +84,11 @@ def send_dic_lec(update, context):
                                                      "Ahí van..!! </strong>",
                                                 parse_mode=telegram.ParseMode.HTML)
         if c[1] == "m":
+            new_json_data("dm")
             nro = u"\U0001F3BC " + c[2] + " / " + c[3] + u" \U0001F449"
             cp = "captionm"
         elif c[1] == "r":
+            new_json_data("dr")
             nro = u"\U0001F941 " + c[2] + " / " + c[3] + u" \U0001F449"
             cp = "captionr"
 
@@ -108,8 +112,10 @@ def send_dic_lec(update, context):
         update.callback_query.edit_message_text(text="\U0001f916 <strong>As2d2 working.... </strong>",
                                                 parse_mode=telegram.ParseMode.HTML)
         if c[1] == "m":
+            new_json_data("lm")
             msg = u'\U0001F440 \U0001F3BC' + " Nro: " + c[3]
         elif c[1] == "r":
+            new_json_data("lr")
             msg = u'\U0001F440 \U0001F941' + " Letra: " + c[3]
 
         with open(path + ".png", "rb") as photo_file:
@@ -194,8 +200,10 @@ def send_melo_hind(update, context):
     update.callback_query.edit_message_text(text="\U0001f916 <strong>As2d2 procesando...</strong>",
                                             parse_mode=telegram.ParseMode.HTML)
     if c[0] == "melo":
+        new_json_data("melo")
         cap = u'\U0001F941' + " Melo Castillo " + c[2]
     elif c[0] == "hind":
+        new_json_data("hind")
         cap = u'\U0001F941' + " Hindemith " + c[2]
 
     with open(c[0] + "/" + c[1] + "/" + c[2] + ".mp3", "rb") as audio_file:
@@ -231,6 +239,7 @@ def send_pdf(update, context):
     c = context.user_data
     c[1] = update.callback_query["data"][1:]
     logging.info("Sending .pdf file -- " + c[1])
+    new_json_data("bib")
     update.callback_query.edit_message_text(text="\U0001f916 <strong>Esperame que lo tengo que buscar...\n"
                                                  "Mi casa es un lio de papeles</strong>",
                                             parse_mode=telegram.ParseMode.HTML)
@@ -343,6 +352,10 @@ def snd_seq(update, context):
     update.callback_query.answer()
     c = context.user_data
     logging.info("Enviando secuencia -- " + c[1] + "/" + c[2] + "/" + c[3] + "/" + c[4])
+    if c[1] == 'Melódicas':
+        new_json_data("sm")
+    else:
+        new_json_data("sr")
     context.bot.sendMessage(chat_id=update.callback_query["message"]["chat"]["id"],
                             text="\U0001f916 <strong>Elegí estos sonidos para vos....\n"
                                  "Cuando lo tengas pedime la solución </strong>",
@@ -414,6 +427,7 @@ def snd_solf(update, context):
     c = context.user_data
     c[2] = update.callback_query["data"][1:]
     logging.info("Enviando solfeo -- " + c[0] + "/" + c[1] + "/" + c[2])
+    new_json_data("sol")
     update.callback_query.edit_message_text(text="\U0001f916 <strong>As2d2 procesando...</strong>",
                                             parse_mode=telegram.ParseMode.HTML)
     cap = u"\U0001F3B6 Solfeo " + c[1] + " " + c[2]
@@ -526,7 +540,22 @@ def error(update, context): # Para cuando usan botoneras viejas y se marea el di
                                 text="<strong>🤖 Que papelón!!,\nalgo salió mal..... \n"
                                      f"Seguí por acá 👉 /start </strong>", parse_mode=telegram.ParseMode.HTML)
 
+def stats(update, context):
+    update.message.reply_text('🤖')
+    first_name = update.message.from_user.first_name
+    context.user_data[0] = "start"
+    msg = u" <strong>Hola {}!! Aqui están algunos datos del uso del bot.</strong>".format(first_name)
+    context.bot.sendMessage(chat_id=devid, text=msg, parse_mode=telegram.ParseMode.HTML)
+    plot_data(json.load(open("usage.json")))
+    with open("grafico_uso.png", "rb") as photo_file:
+        context.bot.send_chat_action(chat_id=update.effective_chat.id, action="upload_photo")
+        context.bot.send_photo(chat_id=update.effective_chat.id, photo=photo_file)
+    os.remove("grafico_uso.png")
+    context.bot.sendMessage(chat_id=update.effective_chat.id,
+                            text="<strong>🤖 No vayas a tipear esto..... \n"
+                                 f"Seguí por acá 👉 /start </strong>", parse_mode=telegram.ParseMode.HTML)
 
+disp.add_handler(telegram.ext.CommandHandler("stats", stats))
 disp.add_handler(telegram.ext.CommandHandler("start", start))
 disp.add_handler(telegram.ext.MessageHandler(telegram.ext.Filters.text, handle_message))
 disp.add_handler(telegram.ext.CallbackQueryHandler(pattern="home", callback=start_over))
