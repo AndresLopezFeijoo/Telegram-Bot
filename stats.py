@@ -59,7 +59,10 @@ def plot_data(dict): # El json de uso del bot
     plt.title("Uso diario de Astorito") #Titulo
     plt.legend()  #Muestra las referencias de "label"
     plt.xticks(ticks=x_ind, labels=dates) # cambia los labels de x para que no sean los numeros que cree para mover las barras
+    plt.grid(ls = "--")
+    plt.locator_params(axis = "x",tight = True, nbins = 12) # Solo va a mostrar nbins ticks en el eje X
     #plt.show()
+    plt.gcf().autofmt_xdate() # Inclina las fechas
     plt.savefig("grafico_uso.png")
     plt.close()
 
