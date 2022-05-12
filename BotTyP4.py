@@ -448,7 +448,6 @@ def recon(update, context):
     update.callback_query.answer()
     c = context.user_data
     c[0] = update.callback_query["data"]
-    print(c)
     keyboard = base_key(two=True)
     k2 = []
     for i in get_lst(c[0] + "/", True, False):
@@ -464,7 +463,6 @@ def recon2(update, context):
     update.callback_query.answer()
     c = context.user_data
     c[1] = update.callback_query["data"][1:]
-    print(c)
     keyboard = base_key(two=True)
     k2 = []
     for i in reconocimientos[c[1]]:
@@ -482,18 +480,19 @@ def snd_recon(update, context):
     if update.callback_query["data"] != "2":
         c[2] = update.callback_query["data"][1:]
     logging.info("Enviando Reconocimiento -- " + c[1] + "/" + c[2])
-    # new_json_data("rec")  #revisar stats.py para agregarlo
+    new_json_data("rec")  #revisar stats.py para agregarlo
 
     try:
         file = random.choice(reconocimientos[c[1]][c[2]])
         with open("rec/" + c[1] + "/" + file + ".mp3", "rb") as audio_file:
-          context.bot.send_chat_action(chat_id=update.callback_query["message"]["chat"]["id"], action="upload_audio")
-          context.bot.send_voice(chat_id=update.callback_query["message"]["chat"]["id"], voice=audio_file,
-                                 caption="Reconocimiento de " + c[1] + " " + c[2])
-        context.bot.sendMessage(chat_id=update.callback_query["message"]["chat"]["id"],
-                                text="\U0001f916 <strong>Elegí este ejemplo para vos....\n"
-                                     "Cuando lo tengas pedime la solución </strong>",
-                                parse_mode=telegram.ParseMode.HTML)
+            context.bot.sendMessage(chat_id=update.callback_query["message"]["chat"]["id"],
+                                    text="\U0001f916 <strong>Elegí este ejemplo para vos....\n"
+                                         "Cuando lo tengas pedime la solución </strong>",
+                                    parse_mode=telegram.ParseMode.HTML)
+            context.bot.send_chat_action(chat_id=update.callback_query["message"]["chat"]["id"], action="upload_audio")
+            context.bot.send_voice(chat_id=update.callback_query["message"]["chat"]["id"], voice=audio_file,
+                                   caption="Reconocimiento de " + c[1] + " " + c[2])
+
         keyboard = base_key("Solución", "3" + file, two=False)
         disp.add_handler(telegram.ext.CallbackQueryHandler(pattern="3" + file, callback=recon_sol))
         reply_markup = InlineKeyboardMarkup(keyboard)

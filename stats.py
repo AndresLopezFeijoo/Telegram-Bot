@@ -18,7 +18,7 @@ def new_json_data(entry):
 
 
 def plot_data(dict): # El json de uso del bot
-    categories = ["dm", "dr", "lm", "lr", "sm", "sr", "bib", "sol", "hind", "melo"]
+    categories = ["dm", "dr", "lm", "lr", "sm", "sr", "bib", "sol", "hind", "melo", "rec"]
     dates = []
     total = []
     dm = []
@@ -31,6 +31,7 @@ def plot_data(dict): # El json de uso del bot
     sol = []
     hind = []
     melo = []
+    rec = []
     for i in dict:
         dates.append(i)
         counter = Counter()
@@ -40,8 +41,8 @@ def plot_data(dict): # El json de uso del bot
                 eval(j).append(0)
             else:
                 eval(j).append(counter[j])
-    for i, j, k, l, m, n, o, p, q, r in zip(dm, dr, lm, lr, sm, sr, bib, sol, hind, melo):
-        total.append(i + j + k + l + m + n + o + p + q + r)
+    for i, j, k, l, m, n, o, p, q, r, s in zip(dm, dr, lm, lr, sm, sr, bib, sol, hind, melo, rec):
+        total.append(i + j + k + l + m + n + o + p + q + r, s)
     x_ind = np.arange(len(dates))
     width = 0.025
     plt.plot(x_ind, total, label = "totales")
@@ -55,6 +56,7 @@ def plot_data(dict): # El json de uso del bot
     plt.bar(x_ind - 3.5 * width, sol, width=width, label="Solfeo")
     plt.bar(x_ind + 4.5 * width, hind, width=width, label="Hindemith")
     plt.bar(x_ind - 4.5 * width, melo, width=width, label="Melo Cast.")
+    plt.bar(x_ind - 5.5 * width, melo, width=width, label="Recon")
 
     plt.title("Uso diario de Astorito") #Titulo
     plt.legend()  #Muestra las referencias de "label"
