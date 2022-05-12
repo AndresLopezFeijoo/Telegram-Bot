@@ -50,4 +50,3 @@ def base_key(*args, two: bool):
                     [InlineKeyboardButton("Home", callback_data="home"),
                      InlineKeyboardButton("Terminar", callback_data="end")]]
     return keyboard
-

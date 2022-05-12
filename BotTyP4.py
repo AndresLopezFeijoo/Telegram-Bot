@@ -14,11 +14,11 @@ logger = logging.getLogger(__name__)
 
 TOKEN = json.load(open("token.json"))["tok"]
 devid = json.load(open("token.json"))["chatid"]
+reconocimientos = json.load(open("reconicimientos.json"))
 updater = telegram.ext.Updater(TOKEN, use_context=True)
 disp = updater.dispatcher
 datos = json.load(open("datos.json"))
 tyc = json.load(open("typ.json"))
-
 
 def mel_rit(update, context):
     update.callback_query.answer()
@@ -442,6 +442,82 @@ def snd_solf(update, context):
     context.bot.sendMessage(chat_id=update.callback_query["message"]["chat"]["id"],
                             text="\U0001f916 <strong>Hecho!!, Como seguimos...?</strong>",
                             reply_markup=reply_markup, parse_mode=telegram.ParseMode.HTML)
+
+
+def recon(update, context):
+    update.callback_query.answer()
+    c = context.user_data
+    c[0] = update.callback_query["data"]
+    print(c)
+    keyboard = base_key(two=True)
+    k2 = []
+    for i in get_lst(c[0] + "/", True, False):
+        k2.append(InlineKeyboardButton(i, callback_data="1" + str(i)))
+        disp.add_handler(telegram.ext.CallbackQueryHandler(pattern="1" + str(i), callback=recon2))
+
+    keyboard = slice_lst(k2, keyboard, 1)
+    reply_markup = InlineKeyboardMarkup(keyboard)
+    update.callback_query.edit_message_text(text="\U0001f916 <strong>Que tipo de reconocimiento?....</strong>",
+                                            reply_markup=reply_markup, parse_mode=telegram.ParseMode.HTML)
+
+def recon2(update, context):
+    update.callback_query.answer()
+    c = context.user_data
+    c[1] = update.callback_query["data"][1:]
+    print(c)
+    keyboard = base_key(two=True)
+    k2 = []
+    for i in reconocimientos[c[1]]:
+        k2.append(InlineKeyboardButton(i, callback_data="2" + str(i)))
+        disp.add_handler(telegram.ext.CallbackQueryHandler(pattern="2" + str(i), callback=snd_recon))
+
+    keyboard = slice_lst(k2, keyboard, 1)
+    reply_markup = InlineKeyboardMarkup(keyboard)
+    update.callback_query.edit_message_text(text="\U0001f916 <strong>De que año?....</strong>",
+                                            reply_markup=reply_markup, parse_mode=telegram.ParseMode.HTML)
+
+def snd_recon(update, context):
+    update.callback_query.answer()
+    c = context.user_data
+    if update.callback_query["data"] != "2":
+        c[2] = update.callback_query["data"][1:]
+    logging.info("Enviando Reconocimiento -- " + c[1] + "/" + c[2])
+    # new_json_data("rec")  #revisar stats.py para agregarlo
+
+    try:
+        file = random.choice(reconocimientos[c[1]][c[2]])
+        with open("rec/" + c[1] + "/" + file + ".mp3", "rb") as audio_file:
+          context.bot.send_chat_action(chat_id=update.callback_query["message"]["chat"]["id"], action="upload_audio")
+          context.bot.send_voice(chat_id=update.callback_query["message"]["chat"]["id"], voice=audio_file,
+                                 caption="Reconocimiento de " + c[1] + " " + c[2])
+        context.bot.sendMessage(chat_id=update.callback_query["message"]["chat"]["id"],
+                                text="\U0001f916 <strong>Elegí este ejemplo para vos....\n"
+                                     "Cuando lo tengas pedime la solución </strong>",
+                                parse_mode=telegram.ParseMode.HTML)
+        keyboard = base_key("Solución", "3" + file, two=False)
+        disp.add_handler(telegram.ext.CallbackQueryHandler(pattern="3" + file, callback=recon_sol))
+        reply_markup = InlineKeyboardMarkup(keyboard)
+        context.bot.sendMessage(chat_id=update.callback_query["message"]["chat"]["id"],
+                                text="\U0001f916 <strong>Waiting orders .......</strong>",
+                                reply_markup=reply_markup, parse_mode=telegram.ParseMode.HTML)
+    except:
+        return error_no_file(update, context)
+
+def recon_sol(update, context):
+    update.callback_query.answer()
+    c = context.user_data
+    c[3] = update.callback_query["data"][1:].split(".")[0]
+    update.callback_query.edit_message_text(text="\U0001f916 <strong>La respuesta es:\n" + c[3].split("-")[1] +
+                                                 "</strong>", parse_mode=telegram.ParseMode.HTML)
+
+    keyboard = base_key("Otro!!", "2", two=False)
+    disp.add_handler(telegram.ext.CallbackQueryHandler(pattern="2", callback=snd_recon))
+    reply_markup = InlineKeyboardMarkup(keyboard)
+    context.bot.sendMessage(chat_id=update.callback_query["message"]["chat"]["id"],
+                            text="\U0001f916 <strong>Como seguimos? .......</strong>",
+                            reply_markup=reply_markup, parse_mode=telegram.ParseMode.HTML)
+
+
 
 
 def rep(update, context):
