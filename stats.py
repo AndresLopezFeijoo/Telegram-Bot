@@ -42,7 +42,7 @@ def plot_data(dict): # El json de uso del bot
             else:
                 eval(j).append(counter[j])
     for i, j, k, l, m, n, o, p, q, r, s in zip(dm, dr, lm, lr, sm, sr, bib, sol, hind, melo, rec):
-        total.append(i + j + k + l + m + n + o + p + q + r, s)
+        total.append(i + j + k + l + m + n + o + p + q + r + s)
     x_ind = np.arange(len(dates))
     width = 0.025
     plt.plot(x_ind, total, label = "totales")

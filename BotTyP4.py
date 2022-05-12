@@ -484,6 +484,7 @@ def snd_recon(update, context):
 
     try:
         file = random.choice(reconocimientos[c[1]][c[2]])
+        print(file)
         with open("rec/" + c[1] + "/" + file + ".mp3", "rb") as audio_file:
             context.bot.sendMessage(chat_id=update.callback_query["message"]["chat"]["id"],
                                     text="\U0001f916 <strong>Elegí este ejemplo para vos....\n"
