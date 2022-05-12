@@ -12,7 +12,7 @@ logging.basicConfig(filename="log.txt", format='%(asctime)s - %(name)s - %(level
                     level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-TOKEN = json.load(open("token.json"))["tok"]
+TOKEN = json.load(open("token.json"))["testtok"]
 devid = json.load(open("token.json"))["chatid"]
 reconocimientos = json.load(open("reconicimientos.json"))
 updater = telegram.ext.Updater(TOKEN, use_context=True)
