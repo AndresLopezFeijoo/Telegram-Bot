@@ -12,7 +12,7 @@ logging.basicConfig(filename="log.txt", format='%(asctime)s - %(name)s - %(level
                     level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-TOKEN = json.load(open("token.json"))["testtok"]
+TOKEN = json.load(open("token.json"))["tok"]
 devid = json.load(open("token.json"))["chatid"]
 reconocimientos = json.load(open("reconicimientos.json"))
 updater = telegram.ext.Updater(TOKEN, use_context=True)
@@ -484,7 +484,6 @@ def snd_recon(update, context):
 
     try:
         file = random.choice(reconocimientos[c[1]][c[2]])
-        print(file)
         with open("rec/" + c[1] + "/" + file + ".mp3", "rb") as audio_file:
             context.bot.sendMessage(chat_id=update.callback_query["message"]["chat"]["id"],
                                     text="\U0001f916 <strong>Elegí este ejemplo para vos....\n"
