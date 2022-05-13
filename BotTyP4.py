@@ -12,7 +12,7 @@ logging.basicConfig(filename="log.txt", format='%(asctime)s - %(name)s - %(level
                     level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-TOKEN = json.load(open("token.json"))["tok"]
+TOKEN = json.load(open("token.json"))["ttok"]
 devid = json.load(open("token.json"))["chatid"]
 reconocimientos = json.load(open("reconicimientos.json"))
 updater = telegram.ext.Updater(TOKEN, use_context=True)
@@ -508,7 +508,8 @@ def recon_sol(update, context):
     update.callback_query.answer()
     c = context.user_data
     c[3] = update.callback_query["data"][1:].split(".")[0]
-    update.callback_query.edit_message_text(text="\U0001f916 <strong>La respuesta es:\n" + c[3].split("-")[1] +
+    update.callback_query.edit_message_text(text="\U0001f916 <strong>La respuesta es:\n" +
+                                            reconocimientos["sol"][c[3].split("-")[1]] +
                                                  "</strong>", parse_mode=telegram.ParseMode.HTML)
 
     keyboard = base_key("Otro!!", "2", two=False)
