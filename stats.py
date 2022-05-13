@@ -56,7 +56,7 @@ def plot_data(dict): # El json de uso del bot
     plt.bar(x_ind - 3.5 * width, sol, width=width, label="Solfeo")
     plt.bar(x_ind + 4.5 * width, hind, width=width, label="Hindemith")
     plt.bar(x_ind - 4.5 * width, melo, width=width, label="Melo Cast.")
-    plt.bar(x_ind - 5.5 * width, melo, width=width, label="Recon")
+    plt.bar(x_ind - 5.5 * width, rec, width=width, label="Recon")
 
     plt.title("Uso diario de Astorito") #Titulo
     plt.legend()  #Muestra las referencias de "label"
