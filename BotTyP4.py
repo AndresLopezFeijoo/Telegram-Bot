@@ -3,7 +3,7 @@ import json
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import ConversationHandler
 from Tools import slice_lst, get_lst, base_key, send_mail
-from stats import new_json_data, plot_data
+from stats import new_json_data, plot_total_data, plot_detail_data, plot_pie_data
 import random
 import logging
 import os
@@ -622,14 +622,18 @@ def stats(update, context):
     context.user_data[0] = "start"
     msg = u" <strong>Hola {}!! Aqui están algunos datos del uso del bot.</strong>".format(first_name)
     context.bot.sendMessage(chat_id=devid, text=msg, parse_mode=telegram.ParseMode.HTML)
-    plot_data(json.load(open("usage.json")))
-    with open("grafico_uso.png", "rb") as photo_file:
-        context.bot.send_chat_action(chat_id=update.effective_chat.id, action="upload_photo")
-        context.bot.send_photo(chat_id=update.effective_chat.id, photo=photo_file)
-    os.remove("grafico_uso.png")
+    uso = json.load(open("usage.json"))
+    plot_total_data(uso)
+    plot_detail_data(uso)
+    plot_pie_data(uso)
+    for i in range(3):
+        with open("grafico_uso" + str(i) + ".png", "rb") as photo_file:
+            context.bot.send_chat_action(chat_id=update.effective_chat.id, action="upload_photo")
+            context.bot.send_photo(chat_id=update.effective_chat.id, photo=photo_file)
+        os.remove("grafico_uso" + str(i) + ".png")
     context.bot.sendMessage(chat_id=update.effective_chat.id,
                             text="<strong>🤖 No vayas a tipear esto..... \n"
-                                 f"Seguí por acá 👉 /start </strong>", parse_mode=telegram.ParseMode.HTML)
+                                f"Seguí por acá 👉 /start </strong>", parse_mode=telegram.ParseMode.HTML)
 
 disp.add_handler(telegram.ext.CommandHandler("stats", stats))
 disp.add_handler(telegram.ext.CommandHandler("start", start))
