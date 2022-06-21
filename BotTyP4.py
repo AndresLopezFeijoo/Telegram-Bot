@@ -3,7 +3,7 @@ import json
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import ConversationHandler
 from Tools import slice_lst, get_lst, base_key, send_mail
-from stats import new_json_data, plot_total_data, plot_detail_data, plot_pie_data
+from stats import new_json_data, plot_total_data, plot_detail_data, plot_pie_data, refresh_data
 import random
 import logging
 import os
@@ -623,6 +623,7 @@ def stats(update, context):
     msg = u" <strong>Hola {}!! Aqui están algunos datos del uso del bot.</strong>".format(first_name)
     context.bot.sendMessage(chat_id=devid, text=msg, parse_mode=telegram.ParseMode.HTML)
     uso = json.load(open("usage.json"))
+    refresh_data()
     plot_total_data(uso)
     plot_detail_data(uso)
     plot_pie_data(uso)

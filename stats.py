@@ -23,18 +23,25 @@ hind = []
 melo = []
 rec = []
 
-for i in uso:
-    dates.append(i)
-    counter = Counter()
-    counter.update(uso[i])
+def refresh_data():
+    dates.clear()
+    total.clear()
     for j in categories:
-        if j not in counter:
-            eval(j).append(0)
-        else:
-            eval(j).append(counter[j])
-for i, j, k, l, m, n, o, p, q, r, s in zip(dm, dr, lm, lr, sm, sr, bib, sol, hind, melo, rec):
-    total.append(i + j + k + l + m + n + o + p + q + r + s)
-cat_sum = [sum(dm), sum(dr), sum(lm), sum(lr), sum(sm), sum(sr), sum(bib), sum(sol), sum(hind), sum(melo), sum(rec)]
+        eval(j).clear()
+    for i in uso:
+        dates.append(i)
+        counter = Counter()
+        counter.update(uso[i])
+        for j in categories:
+            if j not in counter:
+                eval(j).append(0)
+            else:
+                eval(j).append(counter[j])
+    for i, j, k, l, m, n, o, p, q, r, s in zip(dm, dr, lm, lr, sm, sr, bib, sol, hind, melo, rec):
+        total.append(i + j + k + l + m + n + o + p + q + r + s)
+
+    cat_sum = [sum(dm), sum(dr), sum(lm), sum(lr), sum(sm), sum(sr), sum(bib), sum(sol), sum(hind), sum(melo), sum(rec)]
+    return cat_sum
 
 def new_json_data(entry):
     with open("usage.json", "r") as file:
@@ -88,7 +95,7 @@ def plot_detail_data(dict): # El json de uso del bot
 def plot_pie_data(dict): # El json de uso del bot
     cat = ["D.Melo", "D.Rit", "Lec.Melo", "Lec.Rit", "Sec.Melo", "Sec.Rit", "Bilbio.",
                   "Solfeo", "Hindemith", "M.Castillo", "Reconoc"]
-    plt.bar(cat, cat_sum)
+    plt.bar(cat, refresh_data())
     plt.title("Uso total por categoria") #Titulo
     plt.grid(ls = ":")
     plt.gcf().autofmt_xdate()  # Inclina las fechas
