@@ -6,7 +6,6 @@ from matplotlib import pyplot as plt
 import numpy as np
 from collections import Counter
 
-uso = json.load(open("usage.json"))
 
 categories = ["dm", "dr", "lm", "lr", "sm", "sr", "bib", "sol", "hind", "melo", "rec"]
 dates = []
@@ -24,6 +23,7 @@ melo = []
 rec = []
 
 def refresh_data():
+    uso = json.load(open("usage.json"))
     dates.clear()
     total.clear()
     for j in categories:
