@@ -361,12 +361,13 @@ def snd_seq(update, context):
                                  "Cuando lo tengas pedime la solución </strong>",
                             parse_mode=telegram.ParseMode.HTML)
     file = random.choice(get_lst("secuencias/" + c[1] + "/" + c[2] + "/" + c[3] + "/" + c[4], True, False))
+    c[5] = file.split(".")[0]
     with open("secuencias/" + c[1] + "/" + c[2] + "/" + c[3] + "/" + c[4] + "/" + file + ".flac", "rb") as audio_file:
         context.bot.send_chat_action(chat_id=update.callback_query["message"]["chat"]["id"], action="upload_audio")
         context.bot.send_voice(chat_id=update.callback_query["message"]["chat"]["id"], voice=audio_file,
                                caption="Secuencia, " + c[1] + ", " + c[2] + ", " + c[3], timeout=20)
-    keyboard = base_key("Solución", "y" + file, two=False)
-    disp.add_handler(telegram.ext.CallbackQueryHandler(pattern="y" + file, callback=seq_sol))
+    keyboard = base_key("Solución", "y", two=False)
+    disp.add_handler(telegram.ext.CallbackQueryHandler(pattern="y", callback=seq_sol))
     reply_markup = InlineKeyboardMarkup(keyboard)
     context.bot.sendMessage(chat_id=update.callback_query["message"]["chat"]["id"],
                             text="\U0001f916 <strong>Waiting orders .......</strong>",
@@ -376,7 +377,6 @@ def snd_seq(update, context):
 def seq_sol(update, context):
     update.callback_query.answer()
     c = context.user_data
-    c[5] = update.callback_query["data"][1:].split(".")[0]
     update.callback_query.edit_message_text(text="\U0001f916 <strong>A ver ????....</strong>",
                                             parse_mode=telegram.ParseMode.HTML)
 
