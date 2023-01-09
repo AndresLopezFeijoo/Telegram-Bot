@@ -9,16 +9,15 @@
 
   "melo": ["II","III", "IV", "V", "VI", "VII", "VIII", "IX", "X", "XI"],
 
-  "captionm": [" completo", " Comapases 1, 2 y primer sonido del 3", " Compases 3, 4 y primer sonido del 5",
+  "captionm": [" Completo", " Comapases 1, 2 y primer sonido del 3", " Compases 3, 4 y primer sonido del 5",
               " Compases 5, 6 y primer sonido del 7", " Compases 7 y 8"],
 
-  "captionr": [" completo", " Comapases 1 y 2", " Compases 3 y 4", " Compases 5 y 6", " Compases 7 y 8"],
+  "captionr": [" Completo", " Comapases 1 y 2", " Compases 3 y 4", " Compases 5 y 6", " Compases 7 y 8"],
 
   "start": [["Dictados", "dict", "mel_rit"], ["Hindemith", "hind", "chapters"], ["Melo Castillo", "melo", "chapters"],
-            ["Lecturas", "lect", "mel_rit"], ["Solfeos", "solf", "solf"], ["Teoria", "teoria", "error_no_file"],
+            ["Lecturas", "lect", "mel_rit"], ["Solfeos", "solf", "solf"], ["Teoria", "teo", "teo1"],
             ["Bibliografia", "bib", "books"], ["Secuencias", "secuencias", "sequence"], ["Reconocimientos",
-            "rec", "recon" ], ["Reportá", "rep", "rep"],
-            ["Terminar", "end", "end"]],
+            "rec", "recon" ], ["Reportá", "rep", "rep"], ["Terminar", "end", "end"]],
 
   "root": ["Dob", "Reb", "Mib", "Fab", "Solb", "Lab", "Sib", "Do", "Re", "Mi", "Fa", "Sol", "La", "Si",
             "Do#", "Re#", "Mi#", "Fa#", "Sol#", "La#", "Si#"],

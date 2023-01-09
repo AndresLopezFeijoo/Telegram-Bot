@@ -50,3 +50,9 @@ def base_key(*args, two: bool):
                     [InlineKeyboardButton("Home", callback_data="home"),
                      InlineKeyboardButton("Terminar", callback_data="end")]]
     return keyboard
+
+def print_folder(path):
+    i = json.dumps(get_lst(path, True, False))
+    return print(i)
+
+#print_folder("/Users/andreslopezfeijoo/Desktop/Para Agregar a astorito/Bajo Dado/5dimaumResuel")

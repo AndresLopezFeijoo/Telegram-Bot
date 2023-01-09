@@ -92,7 +92,7 @@
     "mm": "Menor Melódica", "md": "Modo Dórico", "mf": "Modo Frigio", "ml": "Modo Lidio", "mmi": "Modo Mixolidio",
     "p2": "Pentatómico Modo II", "p1": "Pentatónico Modo I", "APM": "Acorde perfecto Mayor",
     "Men": "Acorde Perfecto menor", "Aum": "Quinta aumentada", "Dim": "Quinta disminuida", "V7": "Séptima de dominante",
-    "VII7Dim": "Séptima disminuida", "VII7Sens": "Séptima de sensible", "V9M": "Novena de dominanta Mayor",
+    "VII7Dim": "Séptima disminuida", "VII7Sens": "Séptima de sensible", "V9M": "Novena de dominante Mayor",
     "V9men": "Novena de dominante menor"
   }
 }
