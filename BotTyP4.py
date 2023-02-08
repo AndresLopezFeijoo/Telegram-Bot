@@ -7,12 +7,13 @@ from stats import new_json_data, plot_total_data, plot_detail_data, plot_pie_dat
 import random
 import logging
 import os
+import asyncio
 
 Start, Books, Dictados, MeloHind, Sequences, Reconocimientos, Solfeos, Teoria = range(8)
 
-logging.basicConfig(filename="log.txt", format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-                    level=logging.INFO)
-logger = logging.getLogger(__name__)
+#logging.basicConfig(filename="log.txt", format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+#                    level=logging.INFO)
+#logger = logging.getLogger(__name__)
 
 TOKEN = json.load(open("token.json"))["tok"]
 devid = json.load(open("token.json"))["chatid"]
@@ -29,7 +30,7 @@ def main():
     #disp = updater.dispatcher
 
     conv_handler = telegram.ext.ConversationHandler(
-        entry_points=[telegram.ext.CommandHandler("start", start),
+        entry_points=[telegram.ext.CommandHandler("start",start),
                       telegram.ext.CallbackQueryHandler(pattern="home", callback=start_over)],
         states={
             Start: [telegram.ext.CallbackQueryHandler(pattern="bib", callback=books),
